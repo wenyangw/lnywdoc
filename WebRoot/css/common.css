@@ -1,0 +1,66 @@
+.info {
+	background: #FFFEE6;
+	color: #8F5700;
+	padding: 12px;
+}
+.show {
+	background: #FFFEE6;
+	color: #8F5700;
+	padding: 0px;
+}
+
+.tip {
+	width: 24px;
+	height: 16px;
+	float: left;
+}
+
+table.tinfo{
+	padding: 5px;
+}
+
+table.tinfo td{
+	padding-right: 15px;
+}
+
+table th{
+	text-align: right;
+}
+
+table th.query{
+	text-align: left;
+	padding-left:10px;
+}
+
+table th.queryField{
+	text-align: left;
+	width: 150px;
+	padding-left:10px;
+}
+
+table th.queryOpe{
+	text-align: right;
+	width: 50px;
+	padding-left:10px;
+}
+
+.read{
+	color: #8F5700;
+}
+
+.form_line{
+	margin-top: 8px;
+	margin-left: 5px;
+}
+
+.form_label{
+	margin-left: 5px;
+	font-weight:bold;
+}
+
+.icon-folder-open {
+	background: url('images/tree_icons.png') no-repeat -224px 0;
+}
+.icon-folder-closed {
+	background: url('images/tree_icons.png') no-repeat -208px 0;
+}

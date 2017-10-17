@@ -1,0 +1,5 @@
+1、数据表
+
+	t_cgxq
+		+ F needAudit char(1) '0'
+		+ F isAudit char(1) '0' 
