@@ -17,7 +17,7 @@ public class TEntry implements java.io.Serializable {
 	private String owner;
 	private String fileno;
 	private String volume;
-	private String sort;
+//	private String sort;
 	private TCat TCat;
 	private TLevel TLevel;
 	private TPerson TPerson;
@@ -27,7 +27,7 @@ public class TEntry implements java.io.Serializable {
 	}
 
 	public TEntry(int id, String entryName, Date createTime, Date recordTime, int orderNum, String dir, String bz,
-			String crux, String owner, String fileno, String volume, String sort, TCat TCat, TLevel TLevel, TPerson TPerson){
+			String crux, String owner, String fileno, String volume, TCat TCat, TLevel TLevel, TPerson TPerson){
 		this.id = id;
 		this.entryName = entryName;
 		this.createTime = createTime;
@@ -39,7 +39,6 @@ public class TEntry implements java.io.Serializable {
 		this.owner = owner;
 		this.fileno = fileno;
 		this.volume = volume;
-		this.fileno = sort;
 		this.TCat = TCat;
 		this.TLevel = TLevel;
 		this.TPerson = TPerson;
@@ -148,14 +147,14 @@ public class TEntry implements java.io.Serializable {
 		this.volume = volume;
 	}
 
-	@Column(name = "sort", unique = false, nullable = true)
-	public String getSort() {
-		return sort;
-	}
-
-	public void setSort(String sort) {
-		this.sort = sort;
-	}
+//	@Column(name = "sort", unique = false, nullable = true)
+//	public String getSort() {
+//		return sort;
+//	}
+//
+//	public void setSort(String sort) {
+//		this.sort = sort;
+//	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "catId")

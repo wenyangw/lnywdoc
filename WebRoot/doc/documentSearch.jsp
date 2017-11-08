@@ -17,7 +17,7 @@
 <script type="text/javascript">
 var document_search_did;
 var document_search_tg;
-var document_search_sortCombo;
+//var document_search_sortCombo;
 
 $(function(){
     document_search_did = lnyw.tab_options().did;
@@ -87,12 +87,12 @@ $(function(){
     //根据权限，动态加载功能按钮
     lnyw.toolbar(1, document_search_tg, '${pageContext.request.contextPath}/admin/buttonAction!buttons.action', document_search_did);
 
-    document_search_sortCombo = $("input[name=entrySort]").combobox({
-        url: '${pageContext.request.contextPath}/doc/sort.json',
-        valueField: 'text',
-        textField: 'text',
-        editable: false
-	});
+    <%--document_search_sortCombo = $("input[name=entrySort]").combobox({--%>
+        <%--url: '${pageContext.request.contextPath}/doc/sort.json',--%>
+        <%--valueField: 'text',--%>
+        <%--textField: 'text',--%>
+        <%--editable: false--%>
+	<%--});--%>
 
 	//初始化信息
 	init();
@@ -124,13 +124,13 @@ function searchDocument(){
                 value : $('input[name=entryCrux]').val()
             });
     }
-    if(document_search_sortCombo.combobox('getText').trim()){
-        cond.push(
-            {
-                field : "sort",
-                value : document_search_sortCombo.combobox('getText').trim()
-            });
-    }
+//    if(document_search_sortCombo.combobox('getText').trim()){
+//        cond.push(
+//            {
+//                field : "sort",
+//                value : document_search_sortCombo.combobox('getText').trim()
+//            });
+//    }
     //var opts = document_search_tg.treegrid('options');
     //opts.url = '${pageContext.request.contextPath}/doc/entryAction!searchEntry.action';
     document_search_tg.treegrid('load', {
@@ -183,7 +183,7 @@ function printImgInSearch(){
 			<span class="search_label">关系或</span><input type="checkbox" id='document_search_logic' name="logicOr" class="search_field"/><br/>
 			<span class="search_label">条目名称</span><input type="text" name="entryName" class="search_field"/><br/>
 			<span class="search_label">条目关键字</span><input type="text" name="entryCrux" class="search_field"/><br/>
-			<span class="search_label">类型</span><input type="text" name="entrySort" class="search_field"/><br/>
+			<%--<span class="search_label">类型</span><input type="text" name="entrySort" class="search_field"/><br/>--%>
 		</div>
 	</div>
 	<div data-options="region:'center',title:'结果',split:true, fit:true" style="height:100%;width:100%">

@@ -57,7 +57,7 @@ $(function(){
 	        {field:'recordTime',title:'形成日期', width: 80, formatter: lnyw.dateFormatter},
 	        {field:'createTime',title:'录入日期', width: 80, formatter: lnyw.dateFormatter},
 	        {field:'dir',title:'路径', width: 80},
-	        {field:'sort',title:'类型',width:150},
+//	        {field:'sort',title:'类型',width:150},
 	        {field:'bz',title:'备注',width:150},
 	        {field:'volume',title:'卷号',width:50},
 	        {field:'pageCount',title:'页数',width:50},
@@ -318,12 +318,12 @@ function addDocment(){
 					onLoad : function() {
 						$('.entry_levelId').css("display", 'none');
                         $('.entry_document').css("display", 'table-row');
-                        $('input[name=sort]').combobox({
-							url: '${pageContext.request.contextPath}/doc/sort.json',
-							valueField: 'text',
-							textField: 'text',
-                            editable: false
-						}).combobox('selectedIndex', 0);
+                        <%--$('input[name=sort]').combobox({--%>
+							<%--url: '${pageContext.request.contextPath}/doc/sort.json',--%>
+							<%--valueField: 'text',--%>
+							<%--textField: 'text',--%>
+                            <%--editable: false--%>
+						<%--}).combobox('selectedIndex', 0);--%>
 						$('input[name=entryName]').focus();
 
 					}
@@ -401,12 +401,12 @@ function editDocument(){
 				onLoad : function() {
 					$('.entry_document').css("display", 'table-row');
 					var f = entryAdd.find('form');
-                    $('input[name=sort]').combobox({
-                        url: '${pageContext.request.contextPath}/doc/sort.json',
-                        valueField: 'text',
-                        textField: 'text',
-                        editable: false
-                    });
+                    <%--$('input[name=sort]').combobox({--%>
+                        <%--url: '${pageContext.request.contextPath}/doc/sort.json',--%>
+                        <%--valueField: 'text',--%>
+                        <%--textField: 'text',--%>
+                        <%--editable: false--%>
+                    <%--});--%>
 					var table = f.find('table');
 					$(table).append(
 						'<tr class="entry_levelId">' +
