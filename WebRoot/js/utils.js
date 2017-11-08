@@ -365,7 +365,6 @@ lnyw.toolbar = function(tabId, panel, url, did) {
 		dataType : 'json',
 		success : function(d) {
 			if(d != null){
-				console.info(d);
 				panel.datagrid("addToolbarItem",d);
 			}
 		}

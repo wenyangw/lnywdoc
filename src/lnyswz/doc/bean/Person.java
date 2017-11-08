@@ -13,6 +13,7 @@ public class Person {
 	private Date formalTime;//转正时间
 	private int formalPartyCount;//党龄
 	private String nation;//民族
+	private String bz;
 	/*************全日制教育******begin****/
 	private Date fullEntranceTime;//入学时间
 	private Date fullGraduationTime;//毕业时间
@@ -27,19 +28,20 @@ public class Person {
 	private String jobEducation;
 	private String jobDegree;
 	/**************************end******/
+	private Date companyTime;//到本单位工作时间
 	private Date nowRankTime;//任现职级时间
 	private String rankName;//职称
 	private Date getRankTime;//取得职称时间	
 	private Date jobTime;//参加工作时间
 	private Date jtJobTime;//进入集团的工作时间
 	private int outJobCount;//无就业年限
-	private Date companyTime;//到本单位工作时间
 	private String bestEducation;//最高学历
 	private String phone;//手机号
 	private String idCard;//身份证号码
 	private String socialCard;//个人社保编号
 	private Date socialPayTime;//社保缴费时间	
 	private String medicalCard;//个人医保编号
+	private String companyHouseBankCard;//单位公积金号
 	private String houseBankCard;//个人公积金号
 	private String imgPath;
 	private String bmbh;
@@ -141,6 +143,16 @@ public class Person {
 
 	public void setNation(String nation) {
 		this.nation = nation;
+	}
+
+	
+	
+	public String getBz() {
+		return bz;
+	}
+
+	public void setBz(String bz) {
+		this.bz = bz;
 	}
 
 	public Date getFullEntranceTime() {
@@ -318,6 +330,16 @@ public class Person {
 
 	public void setMedicalCard(String medicalCard) {
 		this.medicalCard = medicalCard;
+	}
+
+	
+	
+	public String getCompanyHouseBankCard() {
+		return companyHouseBankCard;
+	}
+
+	public void setCompanyHouseBankCard(String companyHouseBankCard) {
+		this.companyHouseBankCard = companyHouseBankCard;
 	}
 
 	public String getHouseBankCard() {

@@ -93,7 +93,8 @@ public class TLevel implements java.io.Serializable {
 		this.TCat = TCat;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	//@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "pid")
 	public TLevel getTLevel() {
 		return this.TLevel;
@@ -103,7 +104,7 @@ public class TLevel implements java.io.Serializable {
 		this.TLevel = TLevel;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "TLevel")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "TLevel")
 	public Set<TLevel> getTLevels() {
 		return this.TLevels;
 	}
@@ -112,7 +113,7 @@ public class TLevel implements java.io.Serializable {
 		this.TLevels = TLevels;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "TLevel")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "TLevel")
 	public Set<TEntry> getTEntrys() {
 		return TEntrys;
 	}

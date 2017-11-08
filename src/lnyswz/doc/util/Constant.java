@@ -22,6 +22,11 @@ public interface Constant {
 	public static int Level2_ID_PLUS = 3000000;
 	public static int ENTRY_ID_PLUS = 5000000;
 
+	//当doc中level,entry出现在同一个treegrid时，将id增加，用来区分
+	public static int DOC_LEVEL0_PLUS = 1000000;
+	public static int DOC_LEVEL1_PLUS = 10000;
+	public static int DOC_LEVEL2_PLUS = 1000;
+
 	public static String SEARCH_VALUE_TYPE_STRING = "string";
 	public static String SEARCH_VALUE_TYPE_DATE = "date";
 	public static String SEARCH_VALUE_TYPE_COUNT = "count";

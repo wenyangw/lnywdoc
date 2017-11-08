@@ -93,12 +93,7 @@ public class ImgServiceImpl implements ImgServiceI {
 		List<Img> imgs = null;
 		String hql = "from TImg t where t.TEntry.id = :entryId order by orderNum";
 		Map<String, Object> params = new HashMap<String, Object>();
-		//if(Constant.CATID_PERSON.equals(img.getCatId())) {
-			//params.put("entryId", img.getEntryId() - Constant.ENTRY_ID_PLUS);
-			params.put("entryId", EntryServiceImpl.getEntryId(img.getEntryId(), -Constant.ENTRY_ID_PLUS, !Constant.CATID_DOC.equals(img.getCatId())));
-//		}else{
-//			params.put("entryId", img.getEntryId());
-//		}
+		params.put("entryId", img.getEntryId());
 
 		List<TImg> l = imgDao.find(hql, params);
 		if (l != null && l.size() > 0){
@@ -107,7 +102,6 @@ public class ImgServiceImpl implements ImgServiceI {
 			for (TImg tImg : l) {
 				i = new Img();
 				BeanUtils.copyProperties(tImg, i);
-
 				imgs.add(i);
 			}
 		}

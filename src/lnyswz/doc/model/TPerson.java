@@ -27,6 +27,7 @@ public class TPerson implements java.io.Serializable {
 	private Date joinPartyTime;//入党时间
 	private Date formalTime;//转正时间
 	private String nation;//民族
+	private String bz;
 	/*************全日制教育******begin****/
 	private Date fullEntranceTime;//入学时间
 	private Date fullGraduationTime;//毕业时间
@@ -40,7 +41,8 @@ public class TPerson implements java.io.Serializable {
 	private String jobMajor;
 	private String jobEducation;
 	private String jobDegree;
-	/**************************end******/
+	/**************************end******/	
+	private String bestEducation;//最高学历
 	private Date nowRankTime;//任现职级时间
 	private String rankName;//职称
 	private Date getRankTime;//取得职称时间	
@@ -48,12 +50,12 @@ public class TPerson implements java.io.Serializable {
 	private Date jtJobTime;//进入集团的工作时间
 	private int outJobCount;//到公司前工作年数
 	private Date companyTime;//到本单位工作时间
-	private String bestEducation;//最高学历
 	private String phone;//手机号
 	private String idCard;//身份证号码
 	private String socialCard;//个人社保编号
 	private Date socialPayTime;//社保缴费时间	
 	private String medicalCard;//个人医保编号
+	private String companyHouseBankCard;//个人公积金号
 	private String houseBankCard;//个人公积金号
 	private String imgPath;
 
@@ -66,10 +68,10 @@ public class TPerson implements java.io.Serializable {
 	}
 	
 	public TPerson(int id, int orderNum,String postName,String name,String ename, String sex, Date birthTime, Date joinPartyTime,
-			Date formalTime,String nation,Date fullEntranceTime, Date fullGraduationTime,String fullSchool,String fullMajor
+			Date formalTime,String nation,String bz,Date fullEntranceTime, Date fullGraduationTime,String fullSchool,String fullMajor
 			,String fullEducation,String fullDegree,String jobSchool,String jobMajor,String jobEducation,String jobDegree
 			,Date nowRankTime,String rankName,Date getRankTime,Date jobTime,Date jtJobTime,int outJobCount,Date companyTime,String bestEducation,String phone
-			,String idCard,String socialCard,Date socialPayTime,String medicalCard,String imgPath,String houseBankCard,TDepartment TDepartment)
+			,String idCard,String socialCard,Date socialPayTime,String medicalCard,String imgPath,String companyHouseBankCard,String houseBankCard,TDepartment TDepartment)
 	{
 		this.id=id;
 		this.orderNum=orderNum;
@@ -80,6 +82,7 @@ public class TPerson implements java.io.Serializable {
 		this.joinPartyTime=joinPartyTime;
 		this.formalTime=formalTime;
 		this.nation=nation;
+		this.bz=bz;
 		this.fullEntranceTime=fullEntranceTime;
 		this.fullGraduationTime=fullGraduationTime;
 		this.fullSchool=fullSchool;
@@ -100,6 +103,7 @@ public class TPerson implements java.io.Serializable {
 		this.socialCard=socialCard;
 		this.socialPayTime=socialPayTime;
 		this.medicalCard=medicalCard;
+		this.companyHouseBankCard=companyHouseBankCard;
 		this.houseBankCard=houseBankCard;
 		this.imgPath=imgPath;
 		this.jtJobTime=jtJobTime;
@@ -203,6 +207,16 @@ public class TPerson implements java.io.Serializable {
 
 	public void setNation(String nation) {
 		this.nation = nation;
+	}
+	
+	
+	@Column(name = "bz", unique = false, nullable = true)
+	public String getBz() {
+		return bz;
+	}
+
+	public void setBz(String bz) {
+		this.bz = bz;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -429,6 +443,16 @@ public class TPerson implements java.io.Serializable {
 
 	public void setHouseBankCard(String houseBankCard) {
 		this.houseBankCard = houseBankCard;
+	}
+	
+	
+	@Column(name = "companyHouseBankCard", unique = false, nullable = true)
+	public String getCompanyHouseBankCard() {
+		return companyHouseBankCard;
+	}
+	
+	public void setCompanyHouseBankCard(String companyHouseBankCard) {
+		this.companyHouseBankCard = companyHouseBankCard;
 	}
 
 	

@@ -274,6 +274,25 @@ public class EntryServiceImpl implements EntryServiceI {
 		return count;
 	}
 
+	private long getEntryCountByDocLevel(int levelId, List<TEntry> entryList){
+		long count = 0;
+
+		TLevel tLevel = null;
+		for (TEntry tEntry : entryList) {
+			tLevel = tEntry.getTLevel();
+			if(tLevel.getId() == levelId){
+				count += ImgServiceImpl.getImgCount(tEntry.getId(), entryDao);
+			}
+			if(tLevel.getTLevel() != null && tLevel.getTLevel().getId() == levelId){
+				count += ImgServiceImpl.getImgCount(tEntry.getId(), entryDao);
+			}
+			if(tLevel.getTLevel().getTLevel() != null && tLevel.getTLevel().getTLevel().getId() == levelId){
+				count += ImgServiceImpl.getImgCount(tEntry.getId(), entryDao);
+			}
+		}
+		return count;
+	}
+
 	private long getEntryCountByPerson(int personId, List<TEntry> entryList){
 		long count = 0;
 
@@ -370,6 +389,149 @@ public class EntryServiceImpl implements EntryServiceI {
 	}
 
 	@Override
+	public List<Entry> searchDoc(Entry entry){
+		String hql = "from TEntry t where t.TCat.id = :catId";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("catId", entry.getCatId());
+		ArrayList<Obj> objs = JSON.parseObject(entry.getSearch(), new TypeReference<ArrayList<Obj>>(){});
+		String where = "";
+		for (Obj obj : objs) {
+			if(!where.equals("")){
+				if(entry.getLogicOr().equals("1")){
+					where += " OR ";
+				}else {
+					where += " AND ";
+				}
+			}
+			if(obj.getValue().indexOf(" ") > 0){
+				where += "(";
+				String[] values = obj.getValue().split(" ");
+				for (int i = 0; i < values.length; i++) {
+					if(i != 0){
+						where += " OR ";
+					}
+					where += obj.getField() + " like :" + obj.getField() + i;
+					params.put(obj.getField() + i, "%" + values[i] + "%");
+				}
+				where += ")";
+			}else{
+				where += obj.getField() + " like :" + obj.getField();
+				params.put(obj.getField(), "%" + obj.getValue() + "%");
+			}
+		}
+		if(!where.equals("")) {
+			hql += " and (" + where + ")";
+		}
+
+		//获取满足条件的entry列表
+		List<TEntry> entryList = entryDao.find(hql, params);
+
+		if(entryList != null && entryList.size() > 0) {
+			return getDocs(entry, entryList);
+		}
+
+		return new ArrayList<Entry>();
+	}
+
+	/**
+	 * 处理文书查询结果
+	 * @param entry 前台传入的对象，包含查询的内容，行id
+	 * @param entryList 满足查询条件的entry列表
+	 * @return 返回treegrid格式
+	 */
+	private List<Entry> getDocs(Entry entry,  List<TEntry> entryList) {
+		List<Entry> entrys = new ArrayList<Entry>();
+		Entry e;
+
+		//满足条件的查询，返回第一级(综合、物资供应)
+		if (null == entry.getType()) {
+			TLevel tLevel = null;
+			Set<TLevel> levelSet = new HashSet<TLevel>();
+			for (TEntry tEntry : entryList) {
+				tLevel = tEntry.getTLevel().getTLevel().getTLevel();
+				levelSet.add(tLevel);
+			}
+
+			List<TLevel> levels = new ArrayList<TLevel>(levelSet);
+			Collections.sort(levels, new LevelComparator());
+			for (TLevel level : levels) {
+				e = new Entry();
+				e.setId(getDocIdOfLevel0(level.getId()));
+				e.setEntryName(level.getLevelName());
+				e.setState("closed");
+				e.setType("level0");
+				e.setPageCount((int)getEntryCountByDocLevel(level.getId(), entryList));
+				entrys.add(e);
+			}
+		}
+		//顶级下的查询，返回一级类别（永久、长期）
+		if ("level0".equals(entry.getType())) {
+			TLevel tLevel = null;
+			Set<TLevel> levelSet = new HashSet<TLevel>();
+			for (TEntry tEntry : entryList) {
+				tLevel = tEntry.getTLevel().getTLevel();
+				if (entry.getId() == getDocIdOfLevel0(tLevel.getTLevel().getId())) {
+					levelSet.add(tLevel);
+				}
+			}
+
+			List<TLevel> levels = new ArrayList<TLevel>(levelSet);
+			Collections.sort(levels, new LevelComparator());
+			for (TLevel level : levels) {
+				e = new Entry();
+				e.setId(getDocIdOfLevel1(level.getId()));
+				e.setEntryName(level.getLevelName());
+				e.setState("closed");
+				e.setType("level1");
+				e.setPageCount((int)getEntryCountByDocLevel(level.getId(), entryList));
+				entrys.add(e);
+			}
+		}
+		//一级下的查询，返回二级类别（年度）
+		if ("level1".equals(entry.getType())) {
+			TLevel tLevel = null;
+			Set<TLevel> levelSet = new HashSet<TLevel>();
+			for (TEntry tEntry : entryList) {
+				tLevel = tEntry.getTLevel();
+				if (entry.getId() == getDocIdOfLevel1(tLevel.getTLevel().getId())) {
+					levelSet.add(tLevel);
+				}
+			}
+
+			List<TLevel> levels = new ArrayList<TLevel>(levelSet);
+			Collections.sort(levels, new LevelComparator());
+			for (TLevel level : levels) {
+				e = new Entry();
+				e.setId(getDocIdOfLevel2(level.getId()));
+				e.setEntryName(level.getLevelName());
+				e.setState("closed");
+				e.setType("level2");
+				e.setPageCount((int)getEntryCountByDocLevel(level.getId(), entryList));
+				entrys.add(e);
+			}
+		}
+		//二级类别下的查询，返回条目
+		if ("level2".equals(entry.getType())) {
+			TLevel tLevel = null;
+			Set<TLevel> levelSet = new HashSet<TLevel>();
+			for (TEntry tEntry : entryList) {
+				//获取entry的类别
+				tLevel = tEntry.getTLevel();
+				e = new Entry();
+				//类别与点击查询的类别一致
+				if (entry.getId() == (getDocIdOfLevel2(tLevel.getId()))) {
+					e.setId(tEntry.getId());
+					e.setEntryName(tEntry.getEntryName());
+					e.setType("entry");
+					e.setPageCount((int) ImgServiceImpl.getImgCount(tEntry.getId(), entryDao));
+					entrys.add(e);
+				}
+			}
+		}
+		return entrys;
+	}
+
+	@Override
 	public List<Entry> searchEntry(Entry entry){
 		String hql = "from TEntry t where t.TCat.id = :catId";
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -415,18 +577,14 @@ public class EntryServiceImpl implements EntryServiceI {
 		List<TEntry> entryList = entryDao.find(hql, params);
 
 		if(entryList != null && entryList.size() > 0) {
-			//if(Constant.CATID_PERSON.equals(entry.getCatId())) {
-				return getEntries(entry, entryList);
-//			}else{
-//				return getDocuments(entry, entryList);
-//			}
+			return getEntries(entry, entryList);
 		}
 
 		return new ArrayList<Entry>();
 	}
 
 	/**
-	 * 处理查询结果
+	 * 处理人事档案查询结果
 	 * @param entry 前台传入的对象，包含查询的内容，行id，人员id
 	 * @param entryList 满足查询条件的entry列表
 	 * @return 返回treegrid格式
@@ -446,7 +604,8 @@ public class EntryServiceImpl implements EntryServiceI {
 			Collections.sort(persons, new PersonComparator());
 			for (TPerson tPerson : persons) {
 				e = new Entry();
-				e.setId(tPerson.getId());
+				//e.setId(tPerson.getId());
+				e.setId(getExtraIdOfLevel0(tPerson.getId()));
 				e.setEntryName(tPerson.getName());
 				e.setPersonId(tPerson.getId());
 				e.setState("closed");
@@ -472,11 +631,12 @@ public class EntryServiceImpl implements EntryServiceI {
 			Collections.sort(levels, new LevelComparator());
 			for (TLevel level : levels) {
 				e = new Entry();
-				e.setId(level.getId() + getExtraIdOfLevel1(entry.getId()));
+				//e.setId(level.getId() + getExtraIdOfLevel1(entry.getId()));
+				e.setId(getExtraIdOfLevel1(entry.getPersonId(), level.getId()));
 				e.setEntryName(level.getLevelName());
 				e.setState("closed");
 				e.setType("level1");
-				e.setPersonId(entry.getId());
+				e.setPersonId(entry.getPersonId());
 				e.setPageCount((int)getEntryCountByLevel(level.getId(), entryList));
 				entrys.add(e);
 			}
@@ -490,16 +650,18 @@ public class EntryServiceImpl implements EntryServiceI {
 				tLevel = tEntry.getTLevel();
 				e = new Entry();
 				//类别与点击查询的类别一致
-				if (tLevel.getId() == (entry.getId() - getExtraIdOfLevel1(entry.getPersonId()))) {
-					e.setId(tEntry.getId() + getExtraIdOfEntry(entry.getPersonId()));
+				//if (tLevel.getId() == (entry.getId() - getExtraIdOfLevel1(entry.getPersonId()))) {
+				if (entry.getId() == getExtraIdOfLevel1(entry.getPersonId(), tLevel.getId())) {
+					//e.setId(tEntry.getId() + getExtraIdOfEntry(entry.getPersonId()));
+					e.setId(tEntry.getId());
 					e.setEntryName(tEntry.getEntryName());
-					e.setEntryId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
+					//e.setEntryId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
 					e.setType("entry");
 					e.setPageCount((int) ImgServiceImpl.getImgCount(tEntry.getId(), entryDao));
 					entrys.add(e);
 				}
 				//类别有父类，并且父类id与查询的类别一致
-				if (tLevel.getTLevel() != null && tLevel.getTLevel().getId() == (entry.getId() - getExtraIdOfLevel1(entry.getPersonId()))) {
+				if (tLevel.getTLevel() != null && entry.getId() == getExtraIdOfLevel1(entry.getPersonId(), tLevel.getTLevel().getId())) {
 					levelSet.add(tLevel);
 				}
 			}
@@ -508,10 +670,11 @@ public class EntryServiceImpl implements EntryServiceI {
 				Collections.sort(levels, new LevelComparator());
 				for (TLevel level : levels) {
 					e = new Entry();
-					e.setId(level.getId() + getExtraIdOfLevel2(entry.getPersonId()));
+					//e.setId(level.getId() + getExtraIdOfLevel2(entry.getPersonId()));
+					e.setId(getExtraIdOfLevel2(entry.getPersonId(), level.getId()));
 					e.setEntryName(level.getLevelName());
-					e.setType("level2");
 					e.setState("closed");
+					e.setType("level2");
 					e.setPersonId(entry.getPersonId());
 					e.setPageCount((int)getEntryCountByLevel(level.getId(), entryList));
 					entrys.add(e);
@@ -529,26 +692,49 @@ public class EntryServiceImpl implements EntryServiceI {
 				tLevel = tEntry.getTLevel();
 				e = new Entry();
 				//类别与点击查询的类别一致
-				if (tLevel.getId() == (entry.getId() - getExtraIdOfLevel2(entry.getPersonId()))) {
-					e.setId(tEntry.getId() + getExtraIdOfEntry(entry.getPersonId()));
+				//if (tLevel.getId() == (entry.getId() - getExtraIdOfLevel2(entry.getPersonId()))) {
+				if (entry.getId() == getExtraIdOfLevel2(entry.getPersonId(), tLevel.getId())) {
+					//e.setId(tEntry.getId() + getExtraIdOfEntry(entry.getPersonId()));
+					e.setId(tEntry.getId());
 					e.setEntryName(tEntry.getEntryName());
-					e.setEntryId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
+					//e.setEntryId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
 					e.setType("entry");
 					e.setPageCount((int)ImgServiceImpl.getImgCount(tEntry.getId(), entryDao));
 					entrys.add(e);
 				}
 			}
 		}
-		//return new ArrayList<Entry>(entrySets);
 		return entrys;
 	}
 
-	private int getExtraIdOfLevel1(int personId){
-		return Constant.Level1_ID_PLUS + personId * Constant.ID_PLUS;
+	private int getDocIdOfLevel0(int id){
+		return Constant.DOC_LEVEL0_PLUS * id;
 	}
 
-	private int getExtraIdOfLevel2(int personId){
-		return Constant.Level2_ID_PLUS + personId * Constant.ID_PLUS;
+	private int getDocIdOfLevel1(int id){
+		return Constant.DOC_LEVEL1_PLUS * id;
+	}
+
+	private int getDocIdOfLevel2(int id){
+		return Constant.DOC_LEVEL2_PLUS * id;
+	}
+
+	private int getExtraIdOfLevel0(int personId){
+		return Constant.DOC_LEVEL0_PLUS * personId;
+	}
+
+//	private int getExtraIdOfLevel1(int personId){
+//		return Constant.Level1_ID_PLUS + personId * Constant.ID_PLUS;
+//	}
+	private int getExtraIdOfLevel1(int personId, int levelId){
+		return Constant.DOC_LEVEL0_PLUS * personId + Constant.DOC_LEVEL1_PLUS * levelId;
+	}
+
+//	private int getExtraIdOfLevel2(int personId){
+//		return Constant.Level2_ID_PLUS + personId * Constant.ID_PLUS;
+//	}
+	private int getExtraIdOfLevel2(int personId, int levelId){
+		return Constant.DOC_LEVEL0_PLUS * personId + Constant.DOC_LEVEL2_PLUS * levelId;
 	}
 
 	private int getExtraIdOfEntry(int personId){
@@ -622,125 +808,6 @@ public class EntryServiceImpl implements EntryServiceI {
 		datagrid.setRows(nl);
 		return datagrid;
 	}
-
-	/**
-	 * 处理查询结果
-	 * @param entry 前台传入的对象，包含查询的内容，行id，人员id
-	 * @param entryList 满足查询条件的entry列表
-	 * @return 返回treegrid格式
-	 */
-	private List<Entry> getDocuments(Entry entry,  List<TEntry> entryList) {
-		List<Entry> entrys = new ArrayList<Entry>();
-		Entry e;
-
-		//满足条件的查询，返回人员
-		if (null == entry.getType()) {
-			Set<TPerson> personSet = new HashSet<TPerson>();
-
-			for (TEntry tEntry : entryList) {
-				personSet.add(tEntry.getTPerson());
-			}
-			List<TPerson> persons = new ArrayList<TPerson>(personSet);
-			Collections.sort(persons, new PersonComparator());
-			for (TPerson tPerson : persons) {
-				e = new Entry();
-				e.setId(tPerson.getId());
-				e.setEntryName(tPerson.getName());
-				e.setPersonId(tPerson.getId());
-				e.setState("closed");
-				e.setType("person");
-				e.setPageCount((int)getEntryCountByPerson(tPerson.getId(), entryList));
-				entrys.add(e);
-			}
-		}
-		//人员下的查询，返回一级类别
-		if ("person".equals(entry.getType())) {
-			TLevel tLevel = null;
-			Set<TLevel> levelSet = new HashSet<TLevel>();
-			for (TEntry tEntry : entryList) {
-				tLevel = tEntry.getTLevel();
-				if (tLevel.getTLevel() != null) {
-					levelSet.add(tLevel.getTLevel());
-				} else {
-					levelSet.add(tLevel);
-				}
-			}
-
-			List<TLevel> levels = new ArrayList<TLevel>(levelSet);
-			Collections.sort(levels, new LevelComparator());
-			for (TLevel level : levels) {
-				e = new Entry();
-				e.setId(level.getId() + getExtraIdOfLevel1(entry.getId()));
-				e.setEntryName(level.getLevelName());
-				e.setState("closed");
-				e.setType("level1");
-				e.setPersonId(entry.getId());
-				e.setPageCount((int)getEntryCountByLevel(level.getId(), entryList));
-				entrys.add(e);
-			}
-		}
-		//一级类别下的查询，返回二级类或条目
-		if ("level1".equals(entry.getType())) {
-			TLevel tLevel = null;
-			Set<TLevel> levelSet = new HashSet<TLevel>();
-			for (TEntry tEntry : entryList) {
-				//获取entry的类别
-				tLevel = tEntry.getTLevel();
-				e = new Entry();
-				//类别与点击查询的类别一致
-				if (tLevel.getId() == (entry.getId() - getExtraIdOfLevel1(entry.getPersonId()))) {
-					e.setId(tEntry.getId() + getExtraIdOfEntry(entry.getPersonId()));
-					e.setEntryName(tEntry.getEntryName());
-					e.setEntryId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
-					e.setType("entry");
-					e.setPageCount((int) ImgServiceImpl.getImgCount(tEntry.getId(), entryDao));
-					entrys.add(e);
-				}
-				//类别有父类，并且父类id与查询的类别一致
-				if (tLevel.getTLevel() != null && tLevel.getTLevel().getId() == (entry.getId() - getExtraIdOfLevel1(entry.getPersonId()))) {
-					levelSet.add(tLevel);
-				}
-			}
-			if(levelSet.size() > 0) {
-				List<TLevel> levels = new ArrayList<TLevel>(levelSet);
-				Collections.sort(levels, new LevelComparator());
-				for (TLevel level : levels) {
-					e = new Entry();
-					e.setId(level.getId() + getExtraIdOfLevel2(entry.getPersonId()));
-					e.setEntryName(level.getLevelName());
-					e.setType("level2");
-					e.setState("closed");
-					e.setPersonId(entry.getPersonId());
-					e.setPageCount((int)getEntryCountByLevel(level.getId(), entryList));
-					entrys.add(e);
-				}
-			}
-
-		}
-		//一级类别下的查询，返回二级类或条目
-		if ("level2".equals(entry.getType())) {
-			TLevel tLevel = null;
-
-			Collections.sort(entryList, new EntryComparator());
-			for (TEntry tEntry : entryList) {
-				//获取entry的类别
-				tLevel = tEntry.getTLevel();
-				e = new Entry();
-				//类别与点击查询的类别一致
-				if (tLevel.getId() == (entry.getId() - getExtraIdOfLevel2(entry.getPersonId()))) {
-					e.setId(tEntry.getId() + getExtraIdOfEntry(entry.getPersonId()));
-					e.setEntryName(tEntry.getEntryName());
-					e.setEntryId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
-					e.setType("entry");
-					e.setPageCount((int)ImgServiceImpl.getImgCount(tEntry.getId(), entryDao));
-					entrys.add(e);
-				}
-			}
-		}
-		//return new ArrayList<Entry>(entrySets);
-		return entrys;
-	}
-
 
 	@Autowired
 	public void setEntryDao(BaseDaoI<TEntry> entryDao) {

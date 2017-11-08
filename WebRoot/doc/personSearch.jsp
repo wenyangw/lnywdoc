@@ -62,10 +62,10 @@ $(function(){
 			{field:'formalPartyCount',title:'党龄',rowspan:'2'},
 			{title:'全日制教育',colspan:'6',align:'center', group: 1},
 			{title:'在职教育',colspan:'4',align:'center', group: 2},
+			{field:'bestEducation',title:'最高学历',rowspan:'2'},
 			{field:'nowRankTime',title:'任现职级时间',rowspan:'2',type:'time',formatter: lnyw.dateFormatter},
 			{field:'rankName',title:'职称',rowspan:'2'},
 			{field:'getRankTime',title:'取得职称时间',rowspan:'2',type:'time',formatter: lnyw.dateFormatter},
-			{field:'bestEducation',title:'最高学历',rowspan:'2'},
 			{field:'jobTime',title:'参加工作时间',rowspan:'2',type:'time', formatter: lnyw.dateFormatter},
 			{field:'jtJobTime',title:'到集团工作时间',rowspan:'2',type:'time', formatter: lnyw.dateFormatter},
 			{field:'companyTime',title:'到本单位工作时间',rowspan:'2',type:'time', formatter: lnyw.dateFormatter},
@@ -76,7 +76,9 @@ $(function(){
 			{field:'socialCard',title:'个人社保编号',rowspan:'2',type:'number'},
 			{field:'socialPayTime',title:'社保缴费时间',rowspan:'2',type:'time',formatter: lnyw.dateFormatter},
 			{field:'medicalCard',title:'个人医保编号',rowspan:'2',type:'number'},
+			{field:'companyHouseBankCard',title:'单位公积金号',rowspan:'2',type:'number'},
 			{field:'houseBankCard',title:'个人公积金号',rowspan:'2',type:'number'},
+			{field:'bz',title:'备注',rowspan:'2'},
 			{field:'ename',title:'路径',rowspan:'2'},
 		],
 		[
@@ -94,7 +96,7 @@ $(function(){
 	];
 
     selectTitle = getSelectField(person_search_dgTitle);
-		
+
 	personSearch_dg.datagrid({
         url : '${pageContext.request.contextPath}/doc/personAction!personSearchDatagrid.action',
 		fit : true,

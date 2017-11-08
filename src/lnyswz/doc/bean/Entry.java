@@ -14,6 +14,7 @@ public class Entry {
 	private String crux;
 	private String owner;
 	private String fileno;
+	private String volume;
 	private String sort;
 	private String catId;
 	private String catName;
@@ -99,6 +100,14 @@ public class Entry {
 
 	public void setFileno(String fileno) {
 		this.fileno = fileno;
+	}
+
+	public String getVolume() {
+		return volume;
+	}
+
+	public void setVolume(String volume) {
+		this.volume = volume;
 	}
 
 	public String getCatId() {

@@ -30,7 +30,8 @@ $(function(){
 	//wwy
 	//初始化查询结果列表
     document_search_tg = $('#document_search_tg').treegrid({
-        url: '${pageContext.request.contextPath}/doc/entryAction!searchEntry.action',
+        //url: '${pageContext.request.contextPath}/doc/entryAction!searchEntry.action',
+        url: '${pageContext.request.contextPath}/doc/entryAction!searchDoc.action',
         idField: 'id',
         treeField: 'entryName',
         fit: true,
@@ -41,16 +42,17 @@ $(function(){
             {field:'fileno',title:'文号',width:100},
             {field:'recordTime',title:'形成时间'},
             {field:'createTime',title:'录入时间'},
+            {field:'volume',title:'卷号'},
             {field:'pageCount',title:'页数'},
             {field:'bz',title:'备注'},
             {field:'type',title:'类别', hidden:true},
             {field:'personId',title:'人员', hidden:true},
-            {field:'entryId',title:'entryId', hidden:true}
+            {field:'entryId',title:'entryId', hidden:true},
         ]],
         onBeforeExpand: function(row){
             var opts = document_search_tg.treegrid('options');
             opts.queryParams.type = row.type;
-            opts.queryParams.personId = row.personId;
+            //opts.queryParams.personId = row.personId;
         },
         onExpand: function(){
         	clearPicsInSearch();
@@ -64,7 +66,7 @@ $(function(){
                 $.ajax({
 	                url : '${pageContext.request.contextPath}/doc/imgAction!getImgsByEntry.action',
                     data : {
-                        entryId : row.entryId,
+                        entryId : row.id,
 						//catId: '02'
                     },
                     cache : false,
@@ -134,7 +136,7 @@ function searchDocument(){
     document_search_tg.treegrid('load', {
         catId: '02',
         search: JSON.stringify(cond),
-		type: 'person',
+		//type: 'person',
 		logicOr: $('input#document_search_logic').is(':checked') ? '1' : '0'
     });
 }

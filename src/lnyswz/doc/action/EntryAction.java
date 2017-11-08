@@ -101,6 +101,9 @@ public class EntryAction extends BaseAction implements ModelDriven<Entry> {
 	public void searchEntry(){
 		writeJson(entryService.searchEntry(entry));
 	}
+	public void searchDoc(){
+		writeJson(entryService.searchDoc(entry));
+	}
 
 	public void checkDir(){
 		Json j = new Json();

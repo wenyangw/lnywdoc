@@ -59,6 +59,7 @@ $(function(){
 	        {field:'dir',title:'路径', width: 80},
 	        {field:'sort',title:'类型',width:150},
 	        {field:'bz',title:'备注',width:150},
+	        {field:'volume',title:'卷号',width:50},
 	        {field:'pageCount',title:'页数',width:50},
 	        {field:'levelId',title:'类别id',hidden: true}
 	    ]],

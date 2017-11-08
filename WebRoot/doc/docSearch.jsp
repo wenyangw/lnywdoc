@@ -60,7 +60,7 @@ $(function(){
                 $.ajax({
 	                url : '${pageContext.request.contextPath}/doc/imgAction!getImgsByEntry.action',
                     data : {
-                        entryId : row.entryId
+                        entryId : row.id
                     },
                     cache : false,
                     dataType : 'JSON',

@@ -13,6 +13,7 @@ public interface EntryServiceI {
 	public List<Entry> getLevelEntries(Entry entry);
 	public long getEntryCount(int levelId, int personId);
 	public List<Entry> searchEntry(Entry entry);
+	public List<Entry> searchDoc(Entry entry);
 	public List<Entry> searchLevel(Entry entry);
 	public boolean checkEntryByLevel(Entry entry);
 	public boolean checkDir(Entry entry);

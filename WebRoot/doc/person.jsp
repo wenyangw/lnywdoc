@@ -131,6 +131,9 @@ $(function(){
     //根据权限，动态加载功能按钮
     lnyw.toolbar(1, person_levelTg, '${pageContext.request.contextPath}/admin/buttonAction!buttons.action', person_did);
 
+
+
+
     //wwy
     //选中标签后，装载数据
     doc_person_tabs = $('#doc_person_tabs').tabs({
@@ -689,7 +692,6 @@ function editEntry(){
     if(person_dg.datagrid("getSelected")){
         if(person_levelTg.treegrid('getSelected') && person_levelTg.treegrid('getSelected').type == 'entry'){
             var row = person_levelTg.treegrid('getSelected');
-            console.info(row);
             var entryDir = row.dir;
             var entryAdd = $('#doc_person_addEntryDialog');
             entryAdd.dialog({
@@ -914,6 +916,9 @@ function checkEntryDir(personId, levelId, dir){
 								<td class="doc_person_th"><span class="doc_person_span">转正时间:</span><br/><input type="text" name="formalTime" class="easyui-datebox" style="width:138px"></td>
 							</tr>
 							<tr>
+								<td class="doc_person_th"><span class="doc_person_span">备注:</span><br/><input  type="text" name="bz" style="width:133px" /></td>
+							</tr>
+							<tr>
 								<td class="doc_person_th">&nbsp;</td>
 							</tr>
 							<tr>
@@ -973,18 +978,19 @@ function checkEntryDir(personId, levelId, dir){
 							<tr>
 								<td colspan="6"><hr style="height:1px;border:none;border-top:1px dashed red;" /></td>
 							</tr>
+							<tr>		
+								<td class="doc_person_th"><span class="doc_person_span">最高学历:</span><br/>
+									<input id="doc_person_bestEducation" name="bestEducation" style="width:138px">	
+								</td>
+							</tr>
 							<tr>
 								<td class="doc_person_th"><span class="doc_person_span">任现职级时间:</span><br/><input type="text" name="nowRankTime" class="easyui-datebox" style="width:138px"></td>
 								<td class="doc_person_th"><span class="doc_person_span">职称:</span><br/>
 									<input id="doc_person_rankName" name="rankName" style="width:138px">									
 								</td>
 								<td class="doc_person_th"><span class="doc_person_span">取得职称时间:</span><br/><input type="text" name="getRankTime" class="easyui-datebox" style="width:138px"></td>				
-							<%--</tr>--%>
-							<%--<tr>		--%>
-								<td class="doc_person_th"><span class="doc_person_span">最高学历:</span><br/>
-									<input id="doc_person_bestEducation" name="bestEducation" style="width:138px">	
-								</td>
 							</tr>
+						
 							<tr>
 								<td class="doc_person_th">&nbsp;</td>
 							</tr>
@@ -1013,6 +1019,7 @@ function checkEntryDir(personId, levelId, dir){
 								<td class="doc_person_th"><span class="doc_person_span">个人社保编号:</span><br/><input class="easyui-numberbox" type="text" name="socialCard" style="width:133px" /></td>
 								<td class="doc_person_th"><span class="doc_person_span">社保缴费时间:</span><br/><input type="text" name="socialPayTime" class="easyui-datebox" style="width:138px"></td>
 								<td class="doc_person_th"><span class="doc_person_span">个人医保编号:</span><br/><input class="easyui-numberbox" type="text" name="medicalCard" style="width:133px"/></td>
+								<td class="doc_person_th"><span class="doc_person_span">单位公积金号:</span><br/><input class="easyui-numberbox" type="text" name="companyHouseBankCard" style="width:133px"/></td>
 								<td class="doc_person_th"><span class="doc_person_span">个人公积金号:</span><br/><input class="easyui-numberbox" type="text" name="houseBankCard" style="width:133px"/></td>
 							</tr>
 						</table>
