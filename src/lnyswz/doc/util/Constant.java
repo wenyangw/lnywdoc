@@ -16,11 +16,16 @@ public interface Constant {
 	public static String CATID_DOC = "02";
 
 
+	//
 	//当level,entry出现在同一个treegrid时，将id增加，用来区分
 	public static int ID_PLUS = 50000;
-	public static int Level1_ID_PLUS = 1000000;
 	public static int Level2_ID_PLUS = 3000000;
 	public static int ENTRY_ID_PLUS = 5000000;
+
+	//当person中level,entry出现在同一个treegrid时，将id增加，用来区分
+	public static int PERSON_ID_PLUS = 100000000;  // Id
+	public static int LEVEL_ID_PLUS = 100000; // 第一、二levelId
+
 
 	//当doc中level,entry出现在同一个treegrid时，将id增加，用来区分
 	public static int DOC_LEVEL0_PLUS = 1000000;

@@ -52,8 +52,8 @@ $(function(){
 	    },
 	});
 	
-	$('#message_panel').panel({
-		border: false,
+//	$('#message_panel').panel({
+//		border: false,
 // 	    href: '${pageContext.request.contextPath}/admin/updateLogAction!listUpdateLog.action',
 // 	    onLoad: function(){
 // 	    	var data = $(this).html();
@@ -72,7 +72,7 @@ $(function(){
 // 			});
 // 	    	$(this).html(content);
 // 	    },
-	});
+//	});
 		
 });
 
@@ -93,15 +93,15 @@ $(function(){
 			    	<div id="updateLog"></div>
 			    </div>
 			</div>
-			<div style="width:50%;">
-				<div title="通知" collapsible="true" closable="true" style="width:500px;height:300px; padding:15px;">
-			    	<div id="message_panel">
-			    		公司网站已正式开放运行，网站地址为<font style="color:blue;">http://www.lnyswz.cn</font>，请大家广泛宣传。<br>
-			    		内网请访问<a href="http://192.168.0.8" target="_blank">http://192.168.0.8</a>，<br>
-			    		外网请访问<a href="http://www.lnyswz.cn" target="_blank">http://www.lnyswz.cn</a>。
-			    	</div>
-			    </div>
-			</div>
+			<%--<div style="width:50%;">--%>
+				<%--<div title="通知" collapsible="true" closable="true" style="width:500px;height:300px; padding:15px;">--%>
+			    	<%--<div id="message_panel">--%>
+			    		<%--公司网站已正式开放运行，网站地址为<font style="color:blue;">http://www.lnyswz.cn</font>，请大家广泛宣传。<br>--%>
+			    		<%--内网请访问<a href="http://192.168.0.8" target="_blank">http://192.168.0.8</a>，<br>--%>
+			    		<%--外网请访问<a href="http://www.lnyswz.cn" target="_blank">http://www.lnyswz.cn</a>。--%>
+			    	<%--</div>--%>
+			    <%--</div>--%>
+			<%--</div>--%>
 		</div>
 	</div>
 </div>

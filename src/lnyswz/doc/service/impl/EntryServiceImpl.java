@@ -141,8 +141,9 @@ public class EntryServiceImpl implements EntryServiceI {
 	public List<Entry> getLevelEntries(Entry entry) {
 		//获取类别
 		Level level = new Level();
-		level.setId(entry.getId());
+		level.setId(entry.getId() / Constant.LEVEL_ID_PLUS);
 		level.setCatId(entry.getCatId());
+		entry.setLevelId(level.getId());
 
 		List<TLevel> levelList = LevelServiceImpl.getTLevels(level, levelDao);
 
@@ -153,6 +154,7 @@ public class EntryServiceImpl implements EntryServiceI {
 			for (TLevel tLevel : levelList) {
 				e = new Entry();
 				BeanUtils.copyProperties(tLevel, e);
+				e.setId(tLevel.getId() * Constant.LEVEL_ID_PLUS);
 				e.setEntryName(tLevel.getLevelName());
 				e.setPageCount((int)getEntryCount(tLevel.getId(), entry.getPersonId()));
 				if (tLevel.getTLevels().size() > 0) {
@@ -180,7 +182,7 @@ public class EntryServiceImpl implements EntryServiceI {
 	private List<Entry> getEntries(Entry entry) {
 		String hql = "from TEntry t where t.TLevel.id = :levelId and t.TPerson.id = :personId order by orderNum";
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("levelId", entry.getId());
+		params.put("levelId", entry.getLevelId());
 		params.put("personId", entry.getPersonId());
 
 		List<TEntry> l = entryDao.find(hql, params);
@@ -191,7 +193,8 @@ public class EntryServiceImpl implements EntryServiceI {
 			for (TEntry tEntry : l) {
 				e = new Entry();
 				BeanUtils.copyProperties(tEntry, e);
-				e.setId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
+				//e.setId(tEntry.getId() + Constant.ENTRY_ID_PLUS);
+				e.setId(tEntry.getId());
 				e.setType("entry");
 				e.setPageCount((int)ImgServiceImpl.getImgCount(tEntry.getId(), entryDao));
 				e.setLevelId(tEntry.getTLevel().getId());
@@ -213,6 +216,7 @@ public class EntryServiceImpl implements EntryServiceI {
 		}
 		TLevel tLevel = tEntry.getTLevel();
 		if(tLevel.getTLevel() != null){
+			paths.add(tLevel.getTLevel().getDir());
 			paths.add(tLevel.getTLevel().getDir());
 		}
 		paths.add(tLevel.getDir());

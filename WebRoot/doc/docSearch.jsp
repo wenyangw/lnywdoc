@@ -160,6 +160,7 @@ function addImgInSearch(filePath){
 //wwy
 //单击图片后，弹出窗口显示原图
 function showImgInSearch(filePath){
+    console.info(filePath);
     $("#doc_search_img").dialog({
         title: '查看信息',
         width: $(window).width() * 0.6,

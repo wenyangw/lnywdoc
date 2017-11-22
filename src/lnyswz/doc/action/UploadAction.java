@@ -64,6 +64,7 @@ public class UploadAction extends BaseAction{
 			return;
 		}
 
+
 		//检查扩展名
 		String fileExt = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1).toLowerCase();
 		if(!Arrays.<String>asList(extMap.get("image").split(",")).contains(fileExt)){
@@ -72,12 +73,14 @@ public class UploadAction extends BaseAction{
 			return;
 		}
 
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-		String newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000) + "." + fileExt;
+		//SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		//String newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000) + "." + fileExt;
 
 		//上传方式
-        FileUtils.copyFile(upload, new File(savePath + dirName + "\\" + newFileName));
-		saveUrl += dirName + newFileName;
+        //FileUtils.copyFile(upload, new File(savePath + dirName + "\\" + newFileName));
+        FileUtils.copyFile(upload, new File(savePath + dirName + "\\" + uploadFileName));
+		//saveUrl += dirName + newFileName;
+		saveUrl += dirName + uploadFileName;
         //删除临时文件
         upload.delete();
 
