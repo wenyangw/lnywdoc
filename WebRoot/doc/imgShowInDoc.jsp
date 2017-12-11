@@ -22,6 +22,6 @@
 		<input type="button" onclick="printImg()" value="打印图片"/>
 		<hr/>
 	</div>
-	<div id='person_img' style="margin-top: 20px; width: 70%"></div>
+	<div id='doc_img' style="margin-top: 20px; width: 70%"></div>
 </div>
 

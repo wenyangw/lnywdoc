@@ -15,7 +15,6 @@ public class Entry {
 	private String owner;
 	private String fileno;
 	private String volume;
-//	private String sort;
 	private String catId;
 	private String catName;
 	private int levelId;
@@ -125,14 +124,6 @@ public class Entry {
 	public void setCatName(String catName) {
 		this.catName = catName;
 	}
-
-//	public String getSort() {
-//		return sort;
-//	}
-//
-//	public void setSort(String sort) {
-//		this.sort = sort;
-//	}
 
 	public int getLevelId() {
 		return levelId;

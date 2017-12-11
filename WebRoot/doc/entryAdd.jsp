@@ -8,7 +8,7 @@
 			<th><label for="entryName">名称</label></th>
 			<td><input name="entryName" class="easyui-validatebox"
 				data-options="required:true,missingMessage:'请填写名称'"
-				style="width: 156px;"></td>
+				style="width: 356px;"></td>
 		</tr>
 		<tr>
 			<th><label for="recordTime">建档时间</label></th>
@@ -25,7 +25,7 @@
 		</tr>
 		<tr class="entry_document" style="display: none">
 			<th><label for="owner">责任者</label></th>
-			<td><input name="owner" style="width: 156px;"></td>
+			<td><input name="owner" style="width: 200px;"></td>
 		</tr>
 		<tr class="entry_document"  style="display: none">
 			<th><label for="fileno">文号</label></th>

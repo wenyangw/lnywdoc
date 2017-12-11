@@ -53,7 +53,7 @@ $(function(){
 	        {field:'orderNum',title:'件号',width:30},
 	        {field:'owner',title:'责任者', width: 100},
 	        {field:'fileno',title:'文号', width: 100},
-	        {field:'entryName',title:'题名', width: 200},
+	        {field:'entryName',title:'题名', width: 400},
 	        {field:'recordTime',title:'形成日期', width: 80, formatter: lnyw.dateFormatter},
 	        {field:'createTime',title:'录入日期', width: 80, formatter: lnyw.dateFormatter},
 	        {field:'dir',title:'路径', width: 80},
@@ -163,7 +163,7 @@ function addImg(img){
     if($('#doc_document_pics img').length % parseInt($('#doc_document_pics').width() / 240 == 0)){
         $('#doc_document_pics').append("<br/>");
 	}
-    $('#doc_document_pics').append("<img src='" + img.filePath + "' onclick=showImg('" + img.id + "') height='300' width='240'/>");
+    $('#doc_document_pics').append("<img src='" + img.filePath + "' onclick=showImgInDoc('" + img.id + "') height='300' width='240'/>");
 }
 
 //wwy
@@ -194,14 +194,14 @@ function clearPics(){
 
 //wwy
 //单击图片后，弹出窗口显示原图
-function showImg(imgId){
+function showImgInDoc(imgId){
     $("#doc_document_img").dialog({
         title: '查看信息',
         width: $(window).width() * 0.6,
-        height: $(window).height() * 0.9,
+        height: $(window).height(),
         closed: false,
         cache: false,
-        href: '${pageContext.request.contextPath}/doc/imgShow.jsp',
+        href: '${pageContext.request.contextPath}/doc/imgShowInDoc.jsp',
         modal: true,
         onLoad: function(){
             $.ajax({
@@ -213,11 +213,13 @@ function showImg(imgId){
 				async: false,
                 dataType : 'JSON',
                 success : function(data) {
+                    $('#doc_img').html('');
                     $('#doc_img_id').val(data.obj.id);
                     $('#doc_img_bz').val(data.obj.bz);
                     $('#doc_img_crux').val(data.obj.crux);
                     $('#doc_img_orderNum').val(data.obj.orderNum);
-                    $('#doc_img').html('<img src="' + data.obj.filePath + '" style="width:100%"/>');
+                    var img_html = '<img src="' + data.obj.filePath + '" style="width:100%;"/>';
+                    $('#doc_img').html(img_html);
                 }
             });
 		}
@@ -348,7 +350,7 @@ function editDocument(){
 			entryAdd.dialog({
 				title : '编辑条目',
 				href : '${pageContext.request.contextPath}/doc/entryAdd.jsp',
-				width : 350,
+				width : 550,
 				height : 340,
 				buttons : [ {
 					text : '确定',
@@ -501,7 +503,7 @@ function printEntrys(){
 }
 
 function printImg(){
-    $('#doc_img').jqprint();
+    $('#doc_img img').jqprint();
 }
 
 function checkEntryDir(documentId, levelId, dir){

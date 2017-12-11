@@ -314,7 +314,7 @@ function showImg(imgId){
     $("#doc_person_img").dialog({
         title: '查看信息',
         width: $(window).width() * 0.6,
-        height: $(window).height() * 0.9,
+        height: $(window).height(),
         closed: false,
         cache: false,
         href: '${pageContext.request.contextPath}/doc/imgShow.jsp',
@@ -329,11 +329,13 @@ function showImg(imgId){
 				async: false,
                 dataType : 'JSON',
                 success : function(data) {
+                    $('#person_img').html("");
                     $('#doc_img_id').val(data.obj.id);
                     $('#doc_img_bz').val(data.obj.bz);
                     $('#doc_img_crux').val(data.obj.crux);
                     $('#doc_img_orderNum').val(data.obj.orderNum);
-                    $('#doc_img').html('<img src="' + data.obj.filePath + '" style="width:100%"/>');
+                    var img_html = '<img src="' + data.obj.filePath + '" style="width:100%;"/>';
+    				$('#person_img').html(img_html);
                 }
             });
 
@@ -634,7 +636,7 @@ function addEntry(){
 					entryAdd.dialog({
 						title : '增加条目',
 						href : '${pageContext.request.contextPath}/doc/entryAdd.jsp',
-						width : 350,
+						width : 550,
 						height : 300,
 						buttons : [ {
 							text : '确定',
@@ -697,7 +699,7 @@ function editEntry(){
             entryAdd.dialog({
                 title : '编辑条目',
                 href : '${pageContext.request.contextPath}/doc/entryAdd.jsp',
-                width : 350,
+                width : 550,
                 height : 300,
                 buttons : [ {
                     text : '确定',
@@ -838,7 +840,7 @@ function printLevel(){
 }
 
 function printImg(){
-    $('#doc_img').jqprint();
+    $('#person_img img').jqprint();
 }
 
 function checkEntryDir(personId, levelId, dir){

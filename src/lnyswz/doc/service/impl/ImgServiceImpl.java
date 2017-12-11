@@ -38,7 +38,7 @@ public class ImgServiceImpl implements ImgServiceI {
 			t.setOrderNum(getOrderNum(img.getEntryId() - Constant.ENTRY_ID_PLUS) + 1);
 			t.setTEntry(entryDao.load(TEntry.class, img.getEntryId() - Constant.ENTRY_ID_PLUS));
 		}else{
-			t.setOrderNum(getOrderNum(img.getEntryId()));
+			t.setOrderNum(getOrderNum(img.getEntryId()) + 1);
 			t.setTEntry(entryDao.load(TEntry.class, img.getEntryId()));
 		}
 

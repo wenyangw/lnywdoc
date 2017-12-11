@@ -63,8 +63,6 @@ public class LevelServiceImpl implements LevelServiceI {
 	public void edit(Level level) {
 		TLevel t = levelDao.get(TLevel.class, level.getId());
 
-
-
 		boolean flag = false;
 
 		String oldDir = Constant.UPLOADFILE_PATH + (t.getTLevel() != null ? t.getTLevel().getDir() : "") + "/" + t.getDir();
@@ -394,7 +392,7 @@ public class LevelServiceImpl implements LevelServiceI {
 		List<Entry> nl = new ArrayList<Entry>();
 		Entry entry = null;
 
-		TLevel tLevel = levelDao.load(TLevel.class, level.getId());
+		TLevel tLevel = levelDao.load(TLevel.class, level.getId() / Constant.LEVEL_ID_PLUS);
 		//如有父类别先添加父类别
 		if(tLevel.getTLevel() != null){
 			entry = new Entry();
@@ -402,6 +400,7 @@ public class LevelServiceImpl implements LevelServiceI {
 			entry.setState(getOrderForPrint(tLevel.getTLevel().getOrderNum(), Constant.TYPE_LEVEL1));
 			nl.add(entry);
 		}
+
 		entry = new Entry();
 		entry.setEntryName(tLevel.getLevelName());
 		//有父类时，序号要处理
@@ -414,7 +413,7 @@ public class LevelServiceImpl implements LevelServiceI {
 
 		String hql = "from TEntry t where t.TLevel.id = :levelId and t.TPerson.id = :personId order by t.orderNum";
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("levelId", level.getId());
+		params.put("levelId", level.getId() / Constant.LEVEL_ID_PLUS);
 		params.put("personId", level.getPersonId());
 
 		List<TEntry> tEntrys = entryDao.find(hql, params);

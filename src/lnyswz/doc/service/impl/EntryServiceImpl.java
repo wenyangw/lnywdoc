@@ -78,7 +78,8 @@ public class EntryServiceImpl implements EntryServiceI {
 //		}else {
 //			t = entryDao.get(TEntry.class, entry.getId() - Constant.ENTRY_ID_PLUS);
 //		}
-		t = entryDao.get(TEntry.class, getEntryId(entry.getId(), - Constant.ENTRY_ID_PLUS, Constant.CATID_PERSON.equals(entry.getCatId())));
+		//t = entryDao.get(TEntry.class, getEntryId(entry.getId(), - Constant.ENTRY_ID_PLUS, Constant.CATID_PERSON.equals(entry.getCatId())));
+		t = entryDao.get(TEntry.class, entry.getId());
 
 		BeanUtils.copyProperties(entry, t, new String[]{"id", "createTime", "dir"});
 
