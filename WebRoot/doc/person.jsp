@@ -280,7 +280,7 @@ function addImg(img){
     if($('#doc_person_pics img').length % parseInt($('#doc_person_pics').width() / 240 == 0)){
         $('#doc_person_pics').append("<br/>");
 	}
-    $('#doc_person_pics').append("<img src='" + img.filePath + "' onclick=showImg('" + img.id + "') height='300' width='240'/>");
+    $('#doc_person_pics').append("<img src='" + img.filePath + "?v=" + moment().format('YYYYMMHHmmssSSS') + "' onclick=showImg('" + img.id + "') height='300' width='240'/>");
 }
 
 //wwy
@@ -334,7 +334,7 @@ function showImg(imgId){
                     $('#doc_img_bz').val(data.obj.bz);
                     $('#doc_img_crux').val(data.obj.crux);
                     $('#doc_img_orderNum').val(data.obj.orderNum);
-                    var img_html = '<img src="' + data.obj.filePath + '" style="width:100%;"/>';
+                    var img_html = '<img src="' + data.obj.filePath + '?v=' + moment().format("YYYYMMDDHHmmssSSS") + '" style="width:100%;"/>';
     				$('#person_img').html(img_html);
                 }
             });

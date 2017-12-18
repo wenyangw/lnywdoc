@@ -58,6 +58,9 @@ public class TPerson implements java.io.Serializable {
 	private String companyHouseBankCard;//个人公积金号
 	private String houseBankCard;//个人公积金号
 	private String imgPath;
+	private String timeStamp;
+	private String status;
+	private String isAudit;
 
 	
 	private TDepartment TDepartment;
@@ -70,11 +73,13 @@ public class TPerson implements java.io.Serializable {
 	public TPerson(int id, int orderNum,String postName,String name,String ename, String sex, Date birthTime, Date joinPartyTime,
 			Date formalTime,String nation,String bz,Date fullEntranceTime, Date fullGraduationTime,String fullSchool,String fullMajor
 			,String fullEducation,String fullDegree,String jobSchool,String jobMajor,String jobEducation,String jobDegree
-			,Date nowRankTime,String rankName,Date getRankTime,Date jobTime,Date jtJobTime,int outJobCount,Date companyTime,String bestEducation,String phone
-			,String idCard,String socialCard,Date socialPayTime,String medicalCard,String imgPath,String companyHouseBankCard,String houseBankCard,TDepartment TDepartment)
+			,Date nowRankTime,String rankName,Date getRankTime,Date jobTime,Date jtJobTime,int outJobCount,Date companyTime,
+			String bestEducation,String phone, String idCard, String socialCard,Date socialPayTime,String medicalCard,
+			String imgPath,String companyHouseBankCard,String houseBankCard, String timeStamp, String status, String isAudit, TDepartment TDepartment)
 	{
 		this.id=id;
 		this.orderNum=orderNum;
+		this.postName=postName;
 		this.name=name;
 		this.ename = ename;
 		this.sex=sex;
@@ -107,9 +112,12 @@ public class TPerson implements java.io.Serializable {
 		this.houseBankCard=houseBankCard;
 		this.imgPath=imgPath;
 		this.jtJobTime=jtJobTime;
-		this.outJobCount=outJobCount;	
+		this.outJobCount=outJobCount;
+		this.timeStamp = timeStamp;
+		this.status = status;
+		this.isAudit = isAudit;
 		this.TDepartment=TDepartment;
-		this.postName=postName;
+
 	}
 	
 	@Id
@@ -445,7 +453,6 @@ public class TPerson implements java.io.Serializable {
 		this.houseBankCard = houseBankCard;
 	}
 	
-	
 	@Column(name = "companyHouseBankCard", unique = false, nullable = true)
 	public String getCompanyHouseBankCard() {
 		return companyHouseBankCard;
@@ -455,9 +462,6 @@ public class TPerson implements java.io.Serializable {
 		this.companyHouseBankCard = companyHouseBankCard;
 	}
 
-	
-	
-
 	@Column(name = "imgPath", unique = false, nullable = true)
 	public String getImgPath() {
 		return imgPath;
@@ -466,7 +470,34 @@ public class TPerson implements java.io.Serializable {
 	public void setImgPath(String imgPath) {
 		this.imgPath = imgPath;
 	}
-	
+
+	@Column(name = "timeStamp", nullable = true)
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	@Column(name = "status", nullable = false)
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Column(name = "isAudit", nullable = false)
+	public String getIsAudit() {
+		return isAudit;
+	}
+
+	public void setIsAudit(String isAudit) {
+		this.isAudit = isAudit;
+	}
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "bmbh", nullable = true)
 	public TDepartment getTDepartment() {

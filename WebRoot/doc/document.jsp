@@ -163,7 +163,7 @@ function addImg(img){
     if($('#doc_document_pics img').length % parseInt($('#doc_document_pics').width() / 240 == 0)){
         $('#doc_document_pics').append("<br/>");
 	}
-    $('#doc_document_pics').append("<img src='" + img.filePath + "' onclick=showImgInDoc('" + img.id + "') height='300' width='240'/>");
+    $('#doc_document_pics').append("<img src='" + img.filePath + "?v=" + moment().format('YYYYMMDDHHmmssSSS') + "' onclick=showImgInDoc('" + img.id + "') height='300' width='240'/>");
 }
 
 //wwy
@@ -218,7 +218,7 @@ function showImgInDoc(imgId){
                     $('#doc_img_bz').val(data.obj.bz);
                     $('#doc_img_crux').val(data.obj.crux);
                     $('#doc_img_orderNum').val(data.obj.orderNum);
-                    var img_html = '<img src="' + data.obj.filePath + '" style="width:100%;"/>';
+                    var img_html = '<img src="' + data.obj.filePath + '?v=' + moment().format('YYYYMMDDHHmmssSSS') + '" style="width:100%;"/>';
                     $('#doc_img').html(img_html);
                 }
             });
