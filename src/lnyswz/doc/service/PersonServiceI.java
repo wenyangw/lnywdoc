@@ -10,6 +10,7 @@ public interface PersonServiceI {
 	public Person add(Person person);
 	public void edit(Person person);
 	public void delete(Person person);
+	public void cancelSp(Person person);
 
 	public List<Person> listByDep(Person person);
 	

@@ -5,6 +5,7 @@ import java.util.Date;
 public class Person {
 	private int id;
 	private int orderNum;
+	private String postName;//岗位名称
 	private String name;
 	private String ename;
 	private String sex;
@@ -31,7 +32,7 @@ public class Person {
 	private Date companyTime;//到本单位工作时间
 	private Date nowRankTime;//任现职级时间
 	private String rankName;//职称
-	private Date getRankTime;//取得职称时间	
+	private Date getRankTime;//取得职称时间
 	private Date jobTime;//参加工作时间
 	private Date jtJobTime;//进入集团的工作时间
 	private int outJobCount;//无就业年限
@@ -39,13 +40,15 @@ public class Person {
 	private String phone;//手机号
 	private String idCard;//身份证号码
 	private String socialCard;//个人社保编号
-	private Date socialPayTime;//社保缴费时间	
+	private Date socialPayTime;//社保缴费时间
 	private String medicalCard;//个人医保编号
 	private String companyHouseBankCard;//单位公积金号
 	private String houseBankCard;//个人公积金号
 	private String imgPath;
+	private String timeStamp;
+	private String status;
+	private String isAudit;
 	private String bmbh;
-	private String postName;//岗位名称
 
 	
 	/*****非数据库中字段***/
@@ -58,6 +61,11 @@ public class Person {
 	private String createName;
 	private String param;
 	private String search;
+	private String needAudit;
+	private String personSpCond;
+	private String personCond;
+	private String noAuditField;
+	
 	
 	private int page;
 	private int rows;
@@ -357,6 +365,30 @@ public class Person {
 		this.imgPath = imgPath;
 	}
 
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getIsAudit() {
+		return isAudit;
+	}
+
+	public void setIsAudit(String isAudit) {
+		this.isAudit = isAudit;
+	}
+
 	public String getBmbh() {
 		return bmbh;
 	}
@@ -460,5 +492,38 @@ public class Person {
 	public void setCompanyYears(int companyYears) {
 		this.companyYears = companyYears;
 	}
+
+	public String getNeedAudit() {
+		return needAudit;
+	}
+
+	public void setNeedAudit(String needAudit) {
+		this.needAudit = needAudit;
+	}
+
+	public String getPersonSpCond() {
+		return personSpCond;
+	}
+
+	public void setPersonSpCond(String personSpCond) {
+		this.personSpCond = personSpCond;
+	}
+
+	public String getPersonCond() {
+		return personCond;
+	}
+
+	public void setPersonCond(String personCond) {
+		this.personCond = personCond;
+	}
+
+	public String getNoAuditField() {
+		return noAuditField;
+	}
+
+	public void setNoAuditField(String noAuditField) {
+		this.noAuditField = noAuditField;
+	}
+
 
 }

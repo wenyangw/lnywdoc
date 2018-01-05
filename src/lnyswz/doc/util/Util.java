@@ -1,7 +1,14 @@
 package lnyswz.doc.util;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -41,4 +48,27 @@ public class Util {
 		}
 		return str;
 	}
+	
+	
+	public static String[] getNullPropertyNames (Object source,String field) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<String>();
+       
+        	String[] fieldArray = field.split(",");//分割出来的字符数组
+        	for(java.beans.PropertyDescriptor pd : pds) {
+        		if(!(Arrays.asList(fieldArray).contains(pd.getName()))){
+        			emptyNames.add(pd.getName());
+        		}
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
+
+    public static void copyPropertiesIgnoreNull(Object src, Object target,String field){
+        BeanUtils.copyProperties(src, target, getNullPropertyNames(src,field));
+    }
+	
+	
 }

@@ -6,22 +6,32 @@ import lnyswz.common.dao.BaseDaoI;
 import lnyswz.common.util.DateUtil;
 import lnyswz.doc.action.UploadAction;
 import lnyswz.doc.bean.Person;
+import lnyswz.doc.bean.PersonSp;
 import lnyswz.doc.model.*;
 import lnyswz.doc.service.PersonServiceI;
 import lnyswz.doc.util.Constant;
+import lnyswz.doc.util.Util;
+
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 人员实现表
@@ -36,35 +46,62 @@ public class PersonServiceImpl implements PersonServiceI {
 	private BaseDaoI<TDepartment> depDao;
 	private BaseDaoI<TEntry> entryDao;
 	private BaseDaoI<TImg> imgDao;
+	private BaseDaoI<TPersonSp> personSpDao;
 
 	/**
 	 * 增加人员项
 	 */
 	@Override
 	public Person add(Person person) {
+		
+		String timeStamp = DateUtil.dateToString(new Date(),"yyyyMMddHHmmss");
+		person.setTimeStamp(timeStamp);
+		person.setIsAudit("0");
+		person.setStatus("1");	
 		TPerson t = new TPerson();
 		BeanUtils.copyProperties(person, t);
+
 		TDepartment dep=depDao.load(TDepartment.class, person.getBmbh());
 		t.setTDepartment(dep);
 		personDao.save(t);
 
 		person.setId(t.getId());
 
+		TPersonSp tsp = assignmentPersonSp(person);		
+    	personSpDao.save(tsp);
+    	
 		OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + t.getId(),
 				"生成人员", operalogDao);
-
 		return person;
+	}
+	
+	public TPersonSp assignmentPersonSp(Person p){
+		TPersonSp tsp = new TPersonSp(); 
+		BeanUtils.copyProperties(p,tsp);
+		tsp.setPersonId(p.getId());
+		tsp.setCreateTime(new Date());
+		tsp.setPersonName(p.getName());
+		 tsp.setIsAudit("0");
+		return tsp;
 	}
 	
 	/**
 	 * 修改人员
 	 */
 	@Override
-	public void edit(Person person) {
-		TPerson t = personDao.get(TPerson.class, person.getId());
-
+	public void edit(Person person) {		
+		
+		ArrayList<PersonSp> personSpObjs = JSON.parseObject(person.getPersonSpCond(), new TypeReference<ArrayList<PersonSp>>(){});
+		Person p= JSON.parseObject(person.getPersonCond(), new TypeReference<Person>(){});
+		String timeStamp = DateUtil.dateToString(new Date(),"yyyyMMddHHmmss");
+		
+		TPerson t=personDao.load(TPerson.class, person.getId());
+		Util.copyPropertiesIgnoreNull(p,t,person.getNoAuditField());
+		
+		
+		
 		//修改ename值时，改变对应img的路径及实际位置
-		if(!person.getEname().equals(t.getEname())){
+		if(person.getEname() != null && !person.getEname().equals(t.getEname())){
 			String oldDir = Constant.UPLOADFILE_PATH + "/" + t.getEname() + "/";
 
 			String hql = "from TImg t where t.filePath like :dir";
@@ -86,23 +123,73 @@ public class PersonServiceImpl implements PersonServiceI {
 			}
 
 		}
-
-		BeanUtils.copyProperties(person, t);
 		if(!(person.getBmbh().equals(t.getTDepartment().getId()))){
 			TDepartment dep=depDao.load(TDepartment.class, person.getBmbh());
 			t.setTDepartment(dep);
 		}
-		OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + t.getId(),
-				"修改人员", operalogDao);
+		if(personSpObjs.size() > 0){
+			
+			t.setTimeStamp(timeStamp);
+			person.setName(t.getName());
+			person.setTimeStamp(timeStamp);
+			 for (PersonSp obj : personSpObjs) {
+				 
+				 TPersonSp tsp = assignmentPersonSp(person);				
+				 tsp.setOldValue(obj.getOldValue());
+				 tsp.setNewValue(obj.getNewValue());
+				 tsp.setField(obj.getField());
+			     personSpDao.save(tsp);
+			    	
+			     
+				OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + t.getId(),
+				"生成人员", operalogDao);
+			 }
+			 t.setStatus(person.getStatus());	
+		}
+		personDao.update(t);
+		
+		
+		
+		
+
+		
+		
+//		OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + t.getId(),
+//				"修改人员", operalogDao);
 	}
 
 	/**
 	 * 删除人员项
 	 */
 	public void delete(Person person) {
-		personDao.delete(personDao.get(TPerson.class, person.getId()));
+		String timeStamp = DateUtil.dateToString(new Date(),"yyyyMMddHHmmss");
+		TPerson t = personDao.get(TPerson.class, person.getId());
+		t.setStatus(person.getStatus());
+		t.setTimeStamp(timeStamp);
+		personDao.save(t);
+		
+		BeanUtils.copyProperties(t,person);
+		TPersonSp tsp = assignmentPersonSp(person);
+    	personSpDao.save(tsp);
+		
 		OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + person.getId(),
 			"删除人员", operalogDao);
+	}
+	/**
+	 * 撤销审批
+	 */
+	public void cancelSp(Person person) {
+		
+		TPerson t = personDao.get(TPerson.class, person.getId());
+		if(t.getStatus().equals("1")){
+			personDao.delete(t);
+		}else{
+			t.setIsAudit("0");
+			t.setStatus("0");
+			personDao.update(t);
+		}
+		OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + person.getId(),
+				"删除人员", operalogDao);
 	}
 
 	
@@ -323,7 +410,10 @@ public class PersonServiceImpl implements PersonServiceI {
 		this.imgDao = imgDao;
 	}
 
-	
+	@Autowired
+	public void setPersonSpDao(BaseDaoI<TPersonSp> personSpDao) {
+		this.personSpDao = personSpDao;
+	}
 	
 	
 }

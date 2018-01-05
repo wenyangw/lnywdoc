@@ -3,7 +3,9 @@ package lnyswz.doc.action;
 import com.opensymphony.xwork2.ModelDriven;
 import lnyswz.common.action.BaseAction;
 import lnyswz.doc.bean.Cat;
+import lnyswz.doc.bean.Czsh;
 import lnyswz.doc.service.CatServiceI;
+import lnyswz.doc.service.CzshServiceI;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,24 +17,24 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Namespace("/doc")
 @Action("czshAction")
-public class CzshAction extends BaseAction implements ModelDriven<Person> {
-	private Cat cat = new Cat();
-	private CatServiceI catService;
+public class CzshAction extends BaseAction implements ModelDriven<Czsh> {
+	private Czsh czsh = new Czsh();
+	private CzshServiceI czshService;
 
-	/**
-	 * 分类
-	 */
-	public void getCats() {
-		writeJson(catService.getCats(cat));
+	public void datagrid(){
+		writeJson(czshService.datagrid(czsh));
+	}
+	public void getAuditBz(){
+		writeJson(czshService.getAuditBz(czsh));
 	}
 
 	@Override
-	public Cat getModel() {
-		return cat;
+	public Czsh getModel() {
+		return czsh;
 	}
 	
 	@Autowired
-	public void setCatService(CatServiceI catService) {
-		this.catService = catService;
+	public void setCzshService(CzshServiceI czshService) {
+		this.czshService = czshService;
 	}
 }

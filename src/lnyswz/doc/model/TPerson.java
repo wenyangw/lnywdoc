@@ -19,8 +19,8 @@ import javax.persistence.TemporalType;
 public class TPerson implements java.io.Serializable {
 	private int id;
 	private int orderNum;
-	private String postName;
 	private String name;
+	private String postName;
 	private String ename;
 	private String sex;
 	private Date birthTime;
@@ -55,27 +55,30 @@ public class TPerson implements java.io.Serializable {
 	private String socialCard;//个人社保编号
 	private Date socialPayTime;//社保缴费时间	
 	private String medicalCard;//个人医保编号
-	private String companyHouseBankCard;//个人公积金号
+	private String companyHouseBankCard;//公司公积金号
 	private String houseBankCard;//个人公积金号
 	private String imgPath;
+	private String timeStamp;
+	private String status;
+	private String isAudit;
 
-	
 	private TDepartment TDepartment;
-	
-	
+
 	public TPerson(){
 		
 	}
 	
-	public TPerson(int id, int orderNum,String postName,String name,String ename, String sex, Date birthTime, Date joinPartyTime,
+	public TPerson(int id, int orderNum,String name,String postName,String ename, String sex, Date birthTime, Date joinPartyTime,
 			Date formalTime,String nation,String bz,Date fullEntranceTime, Date fullGraduationTime,String fullSchool,String fullMajor
 			,String fullEducation,String fullDegree,String jobSchool,String jobMajor,String jobEducation,String jobDegree
-			,Date nowRankTime,String rankName,Date getRankTime,Date jobTime,Date jtJobTime,int outJobCount,Date companyTime,String bestEducation,String phone
-			,String idCard,String socialCard,Date socialPayTime,String medicalCard,String imgPath,String companyHouseBankCard,String houseBankCard,TDepartment TDepartment)
+			,Date nowRankTime,String rankName,Date getRankTime,Date jobTime,Date jtJobTime,int outJobCount,Date companyTime,
+			String bestEducation,String phone, String idCard, String socialCard,Date socialPayTime,String medicalCard,
+			String imgPath,String companyHouseBankCard,String houseBankCard, String timeStamp, String status, String isAudit, TDepartment TDepartment)
 	{
 		this.id=id;
 		this.orderNum=orderNum;
 		this.name=name;
+		this.postName=postName;
 		this.ename = ename;
 		this.sex=sex;
 		this.birthTime=birthTime;
@@ -107,9 +110,12 @@ public class TPerson implements java.io.Serializable {
 		this.houseBankCard=houseBankCard;
 		this.imgPath=imgPath;
 		this.jtJobTime=jtJobTime;
-		this.outJobCount=outJobCount;	
+		this.outJobCount=outJobCount;
+		this.timeStamp = timeStamp;
+		this.status = status;
+		this.isAudit = isAudit;
 		this.TDepartment=TDepartment;
-		this.postName=postName;
+
 	}
 	
 	@Id
@@ -131,7 +137,15 @@ public class TPerson implements java.io.Serializable {
 		this.orderNum = orderNum;
 	}
 
-	
+	@Column(name = "name", unique = false, nullable = false)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Column(name = "postName",  nullable = true)
 	public String getPostName() {
 		return postName;
@@ -141,14 +155,6 @@ public class TPerson implements java.io.Serializable {
 		this.postName = postName;
 	}
 
-	@Column(name = "name", unique = false, nullable = false)
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Column(name = "ename", unique = true, nullable = false)
 	public String getEname() {
@@ -445,7 +451,6 @@ public class TPerson implements java.io.Serializable {
 		this.houseBankCard = houseBankCard;
 	}
 	
-	
 	@Column(name = "companyHouseBankCard", unique = false, nullable = true)
 	public String getCompanyHouseBankCard() {
 		return companyHouseBankCard;
@@ -455,9 +460,6 @@ public class TPerson implements java.io.Serializable {
 		this.companyHouseBankCard = companyHouseBankCard;
 	}
 
-	
-	
-
 	@Column(name = "imgPath", unique = false, nullable = true)
 	public String getImgPath() {
 		return imgPath;
@@ -466,7 +468,34 @@ public class TPerson implements java.io.Serializable {
 	public void setImgPath(String imgPath) {
 		this.imgPath = imgPath;
 	}
-	
+
+	@Column(name = "timeStamp", nullable = true)
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	@Column(name = "status", nullable = false)
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Column(name = "isAudit", nullable = false)
+	public String getIsAudit() {
+		return isAudit;
+	}
+
+	public void setIsAudit(String isAudit) {
+		this.isAudit = isAudit;
+	}
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "bmbh", nullable = true)
 	public TDepartment getTDepartment() {
