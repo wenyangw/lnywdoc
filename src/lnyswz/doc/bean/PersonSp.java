@@ -17,7 +17,16 @@ public class PersonSp {
 	private String isAudit;
 	private String status;
 	private String timeStamp;
+
+	private String bmbh;
+	private String ywlxId;
+	private String menuId;
 	private String bz;
+
+	private int page;
+	private int rows;
+
+	private String cond;
 
 	public int getId() {
 		return id;
@@ -123,11 +132,59 @@ public class PersonSp {
 		this.timeStamp = timeStamp;
 	}
 
+	public String getBmbh() {
+		return bmbh;
+	}
+
+	public void setBmbh(String bmbh) {
+		this.bmbh = bmbh;
+	}
+
+	public String getYwlxId() {
+		return ywlxId;
+	}
+
+	public void setYwlxId(String ywlxId) {
+		this.ywlxId = ywlxId;
+	}
+
+	public String getMenuId() {
+		return menuId;
+	}
+
+	public void setMenuId(String menuId) {
+		this.menuId = menuId;
+	}
+
 	public String getBz() {
 		return bz;
 	}
 
 	public void setBz(String bz) {
 		this.bz = bz;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public String getCond() {
+		return cond;
+	}
+
+	public void setCond(String cond) {
+		this.cond = cond;
 	}
 }

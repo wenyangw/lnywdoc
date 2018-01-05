@@ -19,8 +19,8 @@ import javax.persistence.TemporalType;
 public class TPerson implements java.io.Serializable {
 	private int id;
 	private int orderNum;
-	private String postName;
 	private String name;
+	private String postName;
 	private String ename;
 	private String sex;
 	private Date birthTime;
@@ -55,22 +55,20 @@ public class TPerson implements java.io.Serializable {
 	private String socialCard;//个人社保编号
 	private Date socialPayTime;//社保缴费时间	
 	private String medicalCard;//个人医保编号
-	private String companyHouseBankCard;//个人公积金号
+	private String companyHouseBankCard;//公司公积金号
 	private String houseBankCard;//个人公积金号
 	private String imgPath;
 	private String timeStamp;
 	private String status;
 	private String isAudit;
 
-	
 	private TDepartment TDepartment;
-	
-	
+
 	public TPerson(){
 		
 	}
 	
-	public TPerson(int id, int orderNum,String postName,String name,String ename, String sex, Date birthTime, Date joinPartyTime,
+	public TPerson(int id, int orderNum,String name,String postName,String ename, String sex, Date birthTime, Date joinPartyTime,
 			Date formalTime,String nation,String bz,Date fullEntranceTime, Date fullGraduationTime,String fullSchool,String fullMajor
 			,String fullEducation,String fullDegree,String jobSchool,String jobMajor,String jobEducation,String jobDegree
 			,Date nowRankTime,String rankName,Date getRankTime,Date jobTime,Date jtJobTime,int outJobCount,Date companyTime,
@@ -81,6 +79,7 @@ public class TPerson implements java.io.Serializable {
 		this.orderNum=orderNum;
 		this.postName=postName;
 		this.name=name;
+		this.postName=postName;
 		this.ename = ename;
 		this.sex=sex;
 		this.birthTime=birthTime;
@@ -139,7 +138,15 @@ public class TPerson implements java.io.Serializable {
 		this.orderNum = orderNum;
 	}
 
-	
+	@Column(name = "name", unique = false, nullable = false)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Column(name = "postName",  nullable = true)
 	public String getPostName() {
 		return postName;
@@ -149,14 +156,6 @@ public class TPerson implements java.io.Serializable {
 		this.postName = postName;
 	}
 
-	@Column(name = "name", unique = false, nullable = false)
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Column(name = "ename", unique = true, nullable = false)
 	public String getEname() {

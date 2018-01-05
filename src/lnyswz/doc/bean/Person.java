@@ -61,6 +61,11 @@ public class Person {
 	private String createName;
 	private String param;
 	private String search;
+	private String needAudit;
+	private String personSpCond;
+	private String personCond;
+	private String noAuditField;
+	
 	
 	private int page;
 	private int rows;
@@ -487,5 +492,38 @@ public class Person {
 	public void setCompanyYears(int companyYears) {
 		this.companyYears = companyYears;
 	}
+
+	public String getNeedAudit() {
+		return needAudit;
+	}
+
+	public void setNeedAudit(String needAudit) {
+		this.needAudit = needAudit;
+	}
+
+	public String getPersonSpCond() {
+		return personSpCond;
+	}
+
+	public void setPersonSpCond(String personSpCond) {
+		this.personSpCond = personSpCond;
+	}
+
+	public String getPersonCond() {
+		return personCond;
+	}
+
+	public void setPersonCond(String personCond) {
+		this.personCond = personCond;
+	}
+
+	public String getNoAuditField() {
+		return noAuditField;
+	}
+
+	public void setNoAuditField(String noAuditField) {
+		this.noAuditField = noAuditField;
+	}
+
 
 }

@@ -78,6 +78,29 @@ public class PersonAction extends BaseAction implements ModelDriven<Person> {
 		writeJson(j);
 	}
 
+	
+	/**
+	 * 删除人员
+	 */
+	public void cancelSp(){
+		User user = (User)session.get("user");
+		person.setCreateId(user.getId());
+		person.setCreateName(user.getRealName());
+		Json j = new Json();
+		try{
+			personService.cancelSp(person);
+			j.setSuccess(true);
+			j.setMsg("撤销成功!");
+		}catch (Exception e){
+			j.setMsg("撤销失败!");
+			e.printStackTrace();
+		}
+		writeJson(j);
+	}
+	
+	
+	
+	
 	/**
 	 * 获得人员
 	 */

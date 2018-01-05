@@ -1121,3 +1121,42 @@ function groupFormatter(fvalue, rows){
 jxc.hideKc = function(area){
 	$(area).layout('collapse', 'east');
 };
+
+
+jxc.person_fields = {
+	name: '姓名',
+	sex: '性别',
+	birthTime: '出生日期',
+    postName: '职务',
+	joinPartyTime: '入党时间',
+	formalTime: '转正时间',
+	nation: '民族',
+	bz: '备注',
+	fullEntranceTime: '全日制教育入学时间',
+	fullGraduationTime: '全日制教育毕业时间',
+	fullSchool: '全日制教育毕业院校',
+	fullMajor: '全日制教育所学专业',
+	fullEducation: '全日制教育学历',
+	fullDegree: '全日制教育学位',
+	jobSchool: '在职教育毕业院校',
+	jobMajor: '在职教育专业',
+	jobEducation: '在职教育学历',
+	jobDegree: '在职教育学位',
+	bestEducation: '最高学历',
+	nowRankTime: '任现职级时间',
+	rankName: '职称',
+	getRankTime: '取得职称时间',
+	jobTime: '参加工作时间',
+	jtJobTime: '进入集团的工作时间',
+	outJobCount: '到公司前工作年数',
+	companyTime: '到本单位工作时间',
+	phone: '手机号',
+	idCard: '身份证号码',
+	socialCard: '个人社保编号',
+	socialPayTime: '社保缴费时间',
+	medicalCard: '个人医保编号',
+	companyHouseBankCard: '公司公积金号',
+	houseBankCard: '个人公积金号',
+	orderNum: '排序',
+	ename: '路径'
+}

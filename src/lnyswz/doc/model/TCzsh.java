@@ -4,41 +4,35 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "t_person_sp")
-public class TPersonSp implements java.io.Serializable {
+@Table(name = "t_czsh")
+public class TCzsh implements java.io.Serializable {
 	private int id;
 	private int personId;
-	private String personName;
+	private String timeStamp;
+	private String bmbh;
 	private int createId;
 	private String createName;
 	private Date createTime;
-	private String field;
-	private String oldValue;
-	private String newValue;
 	private String needAudit;
 	private String isAudit;
-	private String status;
-	private String timeStamp;
+	private String bz;
 
-	public TPersonSp(){
+	public TCzsh(){
 
 	}
 
-	public TPersonSp(int id, int personId, String personName, int createId,	String createName, Date createTime, String field,
-					 String oldValue, String newValue, String needAudit, String isAudit, String status, String timeStamp){
+	public TCzsh(int id, int personId, String timeStamp, String bmbh, int createId, String createName, Date createTime,
+                 String needAudit, String isAudit, String bz){
 		this.id = id;
 		this.personId = personId;
-		this.personName = personName;
+		this.timeStamp = timeStamp;
+		this.bmbh = bmbh;
 		this.createId = createId;
 		this.createName = createName;
 		this.createTime = createTime;
-		this.field = field;
-		this.oldValue = oldValue;
-		this.newValue = newValue;
 		this.needAudit = needAudit;
 		this.isAudit = isAudit;
-		this.status = status;
-		this.timeStamp = timeStamp;
+		this.bz = bz;
 	}
 	
 	@Id
@@ -61,13 +55,13 @@ public class TPersonSp implements java.io.Serializable {
 		this.personId = personId;
 	}
 
-	@Column(name = "personName", nullable = false)
-	public String getPersonName() {
-		return personName;
+	@Column(name = "bmbh", nullable = false)
+	public String getBmbh() {
+		return bmbh;
 	}
 
-	public void setPersonName(String personName) {
-		this.personName = personName;
+	public void setBmbh(String bmbh) {
+		this.bmbh = bmbh;
 	}
 
 	@Column(name = "createId", nullable = false)
@@ -98,33 +92,6 @@ public class TPersonSp implements java.io.Serializable {
 		this.createTime = createTime;
 	}
 
-	@Column(name = "field", nullable = true)
-	public String getField() {
-		return field;
-	}
-
-	public void setField(String field) {
-		this.field = field;
-	}
-
-	@Column(name = "oldValue", nullable = true)
-	public String getOldValue() {
-		return oldValue;
-	}
-
-	public void setOldValue(String oldValue) {
-		this.oldValue = oldValue;
-	}
-
-	@Column(name = "newValue", nullable = true)
-	public String getNewValue() {
-		return newValue;
-	}
-
-	public void setNewValue(String newValue) {
-		this.newValue = newValue;
-	}
-
 	@Column(name = "needAudit", nullable = false)
 	public String getNeedAudit() {
 		return needAudit;
@@ -143,15 +110,6 @@ public class TPersonSp implements java.io.Serializable {
 		this.isAudit = isAudit;
 	}
 
-	@Column(name = "status", nullable = false)
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	@Column(name = "timeStamp", nullable = false)
 	public String getTimeStamp() {
 		return timeStamp;
@@ -160,7 +118,6 @@ public class TPersonSp implements java.io.Serializable {
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
-<<<<<<< HEAD
 
 	@Column(name = "bz", nullable = true)
 	public String getBz() {
@@ -170,6 +127,4 @@ public class TPersonSp implements java.io.Serializable {
 	public void setBz(String bz) {
 		this.bz = bz;
 	}
-=======
->>>>>>> feature_sp
 }
