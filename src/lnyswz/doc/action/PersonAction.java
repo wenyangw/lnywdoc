@@ -32,7 +32,7 @@ public class PersonAction extends BaseAction implements ModelDriven<Person> {
 		try{
 			j.setObj(personService.add(person));
 			j.setSuccess(true);
-			j.setMsg("增加人员成功");
+			j.setMsg("增加人员信息进入审批，请等待！");
 		}catch(Exception e){
 			j.setMsg("增加人员失败");
 			e.printStackTrace();
@@ -48,10 +48,10 @@ public class PersonAction extends BaseAction implements ModelDriven<Person> {
 		person.setCreateName(user.getRealName());
 		Json j = new Json();
 		try {
-			//将获得的前台内容传入Service
+			j.setMsg("修改人员成功！");
 			personService.edit(person);
 			j.setSuccess(true);
-			j.setMsg("修改人员成功！");
+			
 		} catch (Exception e) {
 			j.setMsg("修改人员失败！");
 			e.printStackTrace();
@@ -70,7 +70,7 @@ public class PersonAction extends BaseAction implements ModelDriven<Person> {
 		try{
 			personService.delete(person);
 			j.setSuccess(true);
-			j.setMsg("删除人员成功!");
+			j.setMsg("删除人员信息进入审批，请等待！");
 		}catch (Exception e){
 			j.setMsg("删除人员失败!");
 			e.printStackTrace();

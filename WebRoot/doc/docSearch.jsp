@@ -146,7 +146,6 @@ function searchImg(){
         cache : false,
         dataType : 'JSON',
         success : function(data) {
-            console.info(data);
         }
     });
 }

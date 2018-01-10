@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -63,6 +64,9 @@ public class PersonServiceImpl implements PersonServiceI {
 
 		TDepartment dep=depDao.load(TDepartment.class, person.getBmbh());
 		t.setTDepartment(dep);
+		if(person.getNeedAudit().equals("0")){
+			t.setStatus("0");
+		}
 		personDao.save(t);
 
 		person.setId(t.getId());
@@ -89,15 +93,12 @@ public class PersonServiceImpl implements PersonServiceI {
 	 * 修改人员
 	 */
 	@Override
-	public void edit(Person person) {		
-		
+	public void edit(Person person) {	
 		ArrayList<PersonSp> personSpObjs = JSON.parseObject(person.getPersonSpCond(), new TypeReference<ArrayList<PersonSp>>(){});
 		Person p= JSON.parseObject(person.getPersonCond(), new TypeReference<Person>(){});
 		String timeStamp = DateUtil.dateToString(new Date(),"yyyyMMddHHmmss");
-		
-		TPerson t=personDao.load(TPerson.class, person.getId());
+		TPerson t=personDao.get(TPerson.class, person.getId());
 		Util.copyPropertiesIgnoreNull(p,t,person.getNoAuditField());
-		
 		
 		
 		//修改ename值时，改变对应img的路径及实际位置
@@ -128,8 +129,23 @@ public class PersonServiceImpl implements PersonServiceI {
 			t.setTDepartment(dep);
 		}
 		if(personSpObjs.size() > 0){
+			if(person.getNeedAudit().equals("0") ){
+				List<TPersonSp> tpersonSps = new ArrayList<TPersonSp>();
+				for (PersonSp ps : personSpObjs) {
+					TPersonSp tp = new TPersonSp();
+					tp.setField(ps.getField());
+					tp.setOldValue(ps.getOldValue());
+					tp.setNewValue(ps.getNewValue());
+				
+					tpersonSps.add(tp);
+				}
+				PersonSpServiceImpl.updatePerson(t, tpersonSps);
+
+			}else{
+				t.setTimeStamp(timeStamp);
+				t.setStatus(person.getStatus());
+			}
 			
-			t.setTimeStamp(timeStamp);
 			person.setName(t.getName());
 			person.setTimeStamp(timeStamp);
 			 for (PersonSp obj : personSpObjs) {
@@ -144,10 +160,13 @@ public class PersonServiceImpl implements PersonServiceI {
 				OperalogServiceImpl.addOperalog(person.getCreateId(), "", "", "" + t.getId(),
 				"生成人员", operalogDao);
 			 }
-			 t.setStatus(person.getStatus());	
+
+				
+			 
+			 			
 		}
 		personDao.update(t);
-		
+	
 		
 		
 		
@@ -166,7 +185,12 @@ public class PersonServiceImpl implements PersonServiceI {
 		TPerson t = personDao.get(TPerson.class, person.getId());
 		t.setStatus(person.getStatus());
 		t.setTimeStamp(timeStamp);
-		personDao.save(t);
+		if(person.getNeedAudit().equals("0")){
+			personDao.delete(t);
+		}else{
+			personDao.save(t);	
+		}
+		
 		
 		BeanUtils.copyProperties(t,person);
 		TPersonSp tsp = assignmentPersonSp(person);

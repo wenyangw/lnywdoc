@@ -160,16 +160,4 @@ public class TPersonSp implements java.io.Serializable {
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
-<<<<<<< HEAD
-
-	@Column(name = "bz", nullable = true)
-	public String getBz() {
-		return bz;
-	}
-
-	public void setBz(String bz) {
-		this.bz = bz;
-	}
-=======
->>>>>>> feature_sp
 }

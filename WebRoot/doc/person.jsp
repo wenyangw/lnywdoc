@@ -59,7 +59,10 @@
                 }
 
                 if(getTabIndex() == 0){
-                    getPerson(rowData.id);
+                	if($('#doc_person_name').val() != rowData.name ){
+                		 getPerson(rowData.id);
+                	}
+//                     getPerson(rowData.id);
                 }
                 if(getTabIndex() == 1){
                     $('#doc_person_upload').css('display', 'none');
@@ -85,7 +88,6 @@
                         }
                     },
                 });
-                $("#doc_person").find("input").val('');
                 doc_person_tabs.hide();
             }
 
@@ -212,7 +214,7 @@
 
         //初始化信息
         init();
-
+     	intiObject(); 
     });
 
     //以下为初始化
@@ -663,11 +665,7 @@
     function getPerson(personId){
     	//初始化
     	inputClear();
-		$('.doc_person_span').css('color','black');
-		doc_type="";
-		loadSelectList();
-		$('.doc_person_button_hide').css("display","none");	//隐藏保存，撤销按键
-
+    	intiObject();
 		$.ajax({
 			url : '${pageContext.request.contextPath}/doc/personAction!getPerson.action',
 			async: false,
@@ -678,26 +676,26 @@
 			},
 			success: function(data) {
 				doc_objData=data;
-
+				
 				$('#doc_person_form').form('load', dateFormatter(data));//加载form表单数据
-
-				if(!(doc_objData["status"] == "0" )){
+				
+				if(!(doc_objData["status"] == "0" )){	
 					if(doc_objData["isAudit"] == "9" ){
 						var bz = getAuditBz(personId);
-		 				$("#doc_person_warn").html(warnMessage()+"没有通过审批! ("+bz+")");
-		 				$('#doc_person_button_cancel').css("display","block");//显示撤销按钮
+						var message=[];
+						message.push(warnMessage()+"没有通过审批!");
+						if(bz != null && bz != ""){
+							message.push("("+bz+")");
+						}						
+		 				$("#doc_person_warn").html(message.join(""));
+		 				$('#doc_person_button_cancel').css("display","block");//显示撤销按钮			 				
 			 		}else{
 			 			$("#doc_person_warn").html(warnMessage()+"已提交，等待审批中");
 			 		}
 					getPersonSps(data.timeStamp,personId);//显示提交申请的修改信息
-				}else {
-					$("#doc_person_warn").html("");
 				}
-
-				doc_obj=Object.create(Object.prototype);//初始化obj类（用于存放修改后内容）
-				doc_objNOAudit=Object.create(Object.prototype);//初始化obj类（用于存放不需要审批的内容）
-
-				freezeInput();
+				
+				freezeInput();			
 			}
 		});
 	}
@@ -709,13 +707,11 @@
   	*******************/
     function addPerson(){
     	inputClear();
-        $("#doc_person_warn").html("");
         doc_person_tabs.show();
         //判断是否停留在人员页面
         if(getTabIndex() != 0){
             doc_person_tabs.tabs('select',0);
-        }
-
+        }      
         person_dg.datagrid('clearSelections');
 
         //对部门进行处理
@@ -740,11 +736,14 @@
   	**********修改人员
   	*******************/
     function editPerson(){
-        if(!(doc_objData["status"] == "0" )){
-            $.messager.alert('提示','选中人员信息正在审批中!','error');
-        }else {
+    	if(doc_objData["status"] != "0" ){
+    		if(doc_objData["isAudit"] == "9" ){
+    			$.messager.alert('提示','选中人员信息审批被拒绝,请重新选择!','error');
+    		}else{
+    			$.messager.alert('提示','选中人员信息正在审批中,请重新选择!','error');
+    		}  		
+    	}else {
             outFreezeInput("edit");
-
         }
     }
 
@@ -753,7 +752,7 @@
   	**********人员信息删除 sung
   	*******************/
     function removePerson(){
-    	if(!(doc_objData["status"] == "0" )){
+    	if(doc_objData["status"] != "0" ){
     		if(doc_objData["isAudit"] == "9" ){
     			$.messager.alert('提示','选中人员信息审批被拒绝,请重新选择!','error');
     		}else{
@@ -776,10 +775,17 @@
     								needAudit:getPersonAudit()
     							},
     							success: function(d) {
-     								 doc_person_depCombo.combobox('select', bmbh);
-     								 doc_person_tabs.hide();
+    								var msg;
+    								if(getPersonAudit() == "0"){
+    									doc_person_depCombo.combobox('select', bmbh);
+										msg="删除信息成功！";
+    								}else{
+    									$("#doc_person_warn").html("删除信息已提交，等待审批中");
+    									doc_objData["status"]="3"; 
+										msg=d.msg;
+    								}	
     								 $.messager.show({
-    									 msg : d.msg,
+    									 msg : msg,
     									 title : '提示'
     								 });
     							}
@@ -797,7 +803,7 @@
 
     //提交前检查
     function checkPerson(){
-        if(!($('#doc_person_ename').val() == doc_objData["ename"])){
+        if($('#doc_person_ename').val() != doc_objData["ename"]){
             if(checkPath($('#doc_person_ename').val())){
                 $.messager.alert('提示','该路径已经存在!请重新输入!','error');
                 return false;
@@ -832,17 +838,31 @@
 	function savePerson(){
 		$.messager.confirm('提示', '您是否要新增人员信息', function(r){
 			if (r){
+				var needAudit=getPersonAudit();
 				$('#doc_person_form').form('submit', {
 					url: '${pageContext.request.contextPath}/doc/personAction!add.action',
 					onSubmit: function(param){
-						param.needAudit=getPersonAudit();
+						param.needAudit=needAudit;							
 						return $(this).form('enableValidation').form('validate');
 					},
-					success: function(d){
+					success: function(d){			
 						var json = $.parseJSON(jxc.toJson(d));
-						 refreshEdieShowPerson(json.obj.id,json.obj.bmbh);
+						var msg;
+						getSelectRow(doc_person_depCombo.combobox('getValue'),json.obj.bmbh,json.obj.id);
+						
+						if(needAudit == "0"){
+							doc_objData=Object.create(Object.prototype);
+							doc_objData["status"]='0';
+							doc_objData["ename"]=$('#doc_person_ename').val();
+							$("#doc_person_warn").html("");
+							msg=noAudit("增加人员信息进成功！");
+						}else{
+							doc_objData["status"]='1';
+							$("#doc_person_warn").html("增加人员已提交，等待审批中");
+							msg=json.msg;
+						}	
 						 $.messager.show({
-							 msg : json.msg,
+							 msg : msg,
 							 title : '提示'
 						 });
 					}
@@ -868,13 +888,15 @@
                     doc_field_noAudit.push(key);
                 }
 				//将数据提交后台
-				savePersonSp(getPersonId(),JSON.stringify(doc_objNOAudit),JSON.stringify(doc_cond),doc_field_noAudit.join(","));
+				savePersonSp(getPersonId(),doc_objNOAudit,doc_cond,doc_field_noAudit.join(","));  			
  			}
 	    });
 	}
     //修改人员信息，保存数据到后台  sungj
-    function savePersonSp(personId,personCond,personSpCond,noAuditField){
+    function savePersonSp(personId,doc_objNOAudit,doc_cond,noAuditField){
+    	
     	var bmbh=$('#doc_person_bmbh').combobox('getValue');
+    	var needAudit=getPersonAudit();
     	 $.ajax({
     	 		url : '${pageContext.request.contextPath}/doc/personAction!edit.action',
     	 		async: false,
@@ -882,40 +904,77 @@
     	 		dataType : 'json',
     	 		type: 'POST',
     	 		data:{
-    	 			status:"2",
+    	 			status:"2", 
     	 			id:personId,
-    				personCond:personCond,
-    				personSpCond:personSpCond,
+    				personCond:JSON.stringify(doc_objNOAudit),
+    				personSpCond:JSON.stringify(doc_cond),
     				bmbh:bmbh,
     				noAuditField:noAuditField,
-    				needAudit:getPersonAudit()
+    				needAudit:needAudit
     	 		},
     	 		success: function(d) {
-    	 			refreshEdieShowPerson(personId,bmbh);
-    	 			$.messager.show({
-    					 msg : "已经提交修改申请，请等待审批",
-    					 title : '提示'
-    			 	});
+    	 			
+    	 			if(d.success){
+    	 				getSelectRow(doc_person_depCombo.combobox('getValue'),bmbh,personId);
+        	 			
+        	 			var msg;
+        	 			if(needAudit == "0"){
+        	 				msg=noAudit("修改人员信息进成功！");
+        	 			}else{
+        	 				if(doc_cond && doc_cond.length > 0){ 
+            	 				$("#doc_person_warn").html("修改信息已提交，等待审批中");
+            	 				doc_objData["status"]='2';
+            	 				msg="修改人员信息进入审批，请等待！";
+            	 				showEditText(doc_cond);
+            	 			}else{     
+            	 				msg=noAudit("修改人员信息进成功！");
+            	 
+            	 			}
+        	 			}
+        	 			
+        	 			
+        	 			$.messager.show({
+       					 msg : msg,
+       					 title : '提示'
+       					 
+       			 		});
+    	 			}else{
+    	 				$.messager.show({
+       					 msg : d.msg,
+       					 title : '提示'
+       			 		});
+    	 			}	
+    	 			
     	 		}
     	 	});
     }
-
-	// 增加、修改成功后刷新显示内容 *含计时器 先刷新部门
-	function refreshEdieShowPerson(id,bmbh){
-		doc_person_depCombo.combobox('select', bmbh);
-		var intervalId = setInterval(function() {
-			var selected = person_dg.datagrid('getData');
-				for(var i=0;i<selected.rows.length ;i++ ){
-				if(selected.rows[i].id == id){
-					person_dg.datagrid('selectRow',i);
-				}
-			}
-			clearInterval(intervalId);
-		}, 1000);
-
+	function showEditText(doc_cond){
+		$('.doc_person_span').css('color','black');
+		$.each(doc_cond,function(){
+			$('#doc_person_'+this.field+'_span').html($('#doc_person_'+this.field+'_span').text()
+														+'<span class="newValueShow"  >'
+														+this.newValue+'</span>');
+		});
+		$('.newValueShow').css('color','red'); 
 	}
 
-
+	function noAudit(msg){
+			doc_objData["status"]='0';
+			$('.doc_person_span').css('color','black');
+			$("#doc_person_warn").html("");
+			var m=msg;
+			return m;
+	} 
+	function getSelectRow(oldBmbh,newBmbh,id){
+		if(oldBmbh != newBmbh){
+			doc_person_depCombo.combobox('select', newBmbh);
+		}
+		person_dg.datagrid({"onLoadSuccess":function(data){
+		    $(this).datagrid('selectRecord', id);
+		}});
+		freezeInput();
+		hideButton();
+	}
 	//获取审批拒绝备注内容
 	function getAuditBz(personId){
 		 var bz="";
@@ -944,7 +1003,7 @@
 			dataType : 'json',
 			data:{
 				timeStamp:timeStamp,
-				personId:personId
+				personId:personId	
 			},
 			success: function(data) {
 				$.each(data.rows,function(){
@@ -958,8 +1017,8 @@
 
 	}
 	//取消审批
-	function cancelSp(){
-		  $.messager.confirm('提示', '您是否要撤销信息', function(r){
+	function cancelSp(){		
+		  $.messager.confirm('提示', '您是否要撤销'+warnMessage(), function(r){
 	          if (r){
 	        	  	  var bmbh=$('#doc_person_bmbh').combobox('getValue');
 		        	  $.ajax({
@@ -971,8 +1030,20 @@
 		        				id:getPersonId()
 		        			},
 		        			success: function(data) {
-		        				doc_person_depCombo.combobox('select', bmbh);
-		        				doc_person_tabs.hide();
+		        				if(doc_objData["status"] == "1"){
+		        					doc_person_depCombo.combobox('select', bmbh);
+			        				doc_person_tabs.hide();
+		        				}else{
+		        					clearHint();
+		        					doc_objData["status"] = "0";
+		        					doc_objData["isAudit"] = "0";
+		        					
+		        				}
+		        				$.messager.show({
+		          					 msg : "撤销人员审批信息成功！",
+		          					 title : '提示'
+		          			 	});
+		        				
 		        			}
 		        		});
 
@@ -983,25 +1054,47 @@
 	 //取得审批等级
     function getPersonAudit(){
         var need=0;
-        $.ajax({
-            url : '${pageContext.request.contextPath}/doc/personSpAction!getAuditLevel.action',
-            async: false,
-            cache: false,
-            dataType : 'json',
-            data:{
-                bmbh: person_did,
-                ywlxId: '01'
-            },
-            success: function(d) {
-                need = d;
-            }
-        });
+        if(NEED_AUDIT == '1'){
+			$.ajax({
+				url : '${pageContext.request.contextPath}/doc/personSpAction!getAuditLevel.action',
+				async: false,
+				cache: false,
+				dataType : 'json',
+				data:{
+					bmbh: person_did,
+					ywlxId: '01'
+				},
+				success: function(d) {
+					need = d;
+				}
+			});
+		}
         return need;
     }
 	//清空 input 和 提交修改的内容
 	function inputClear(){
 		$("#doc_person").find("input").val('');
+		clearHint();
+		loadSelectList();
+		
+	}
+	function clearHint(){
 		$('.newValueShow').html("");//清空提示修改信息
+		$('.doc_person_span').css('color','black');
+		hideButton();
+		$("#doc_person_warn").html("");
+		doc_type="";
+
+	}
+
+	function hideButton(){
+		$('.doc_person_button_hide').css("display","none");	//隐藏 保存，撤销按键
+	}
+	//初始化obj类
+	function intiObject(){
+		doc_obj=Object.create(Object.prototype);//初始化obj类（用于存放修改后内容）
+		doc_objNOAudit=Object.create(Object.prototype);//初始化obj类（用于存放不需要审批的内容）
+
 	}
 	//将form表单内的input都变为灰色不可编辑
 	function freezeInput(){
@@ -1011,8 +1104,8 @@
 	}
 	//1.隐藏撤销按钮显示保存按钮 2.将form表单的input变为可编辑，
 	function outFreezeInput(type){
-
-		$('#doc_person_button_cancel').css("display","none");
+		
+// 		$('#doc_person_button_cancel').css("display","none");	
 	 	$('#doc_person_save').css("display","block");
 
 	 	doc_type=type;
@@ -1070,8 +1163,6 @@
 
 	//监听事件，对人员form表单内的input失去焦点触发事件，获取修改input的name和value
 	function monitorInputChange(){
-
-
 	    $(".audit").blur(
 	        function(){
 	            var field=this.name;
@@ -1079,7 +1170,7 @@
 	            changeAuditInputPushObje(field,fieldVal);
 	        }
 	    );
-
+	
 	    $(".audit_number").blur(
 	        function(){
 	            var field=$(this).attr("numberboxname");
@@ -1087,29 +1178,29 @@
 	            changeAuditInputPushObje(field,fieldVal);
 	        }
 	    );
-
-
+	
+	
 	    $('.audit_select').combobox({
 	        onChange:function(newValue,oldValue){
 	            var field=$(this).attr("comboname");
 	            changeAuditInputPushObje(field,newValue);
 	        }
 	    });
-
+	
 	    $('.audit_time').datebox({
 	        onSelect: function(data){
 	            var field=$(this).attr("comboname");
 	            var fieldVal=moment(data).format('YYYY-MM-DD');
 	            changeAuditInputPushObje(field,fieldVal);
-
+	
 	        }
 	    });
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	
 	    $(".no_audit").blur(
 	        function(){
 	            var field=this.name;
@@ -1117,7 +1208,7 @@
 	            changeNOAuditInputPushObje(field,fieldVal);
 	        }
 	    );
-
+	
 	    $(".no_audit_number").blur(
 	        function(){
 	            var field=$(this).attr("numberboxname");
@@ -1125,21 +1216,21 @@
 	            changeNOAuditInputPushObje(field,fieldVal);
 	        }
 	    );
-
-
+	
+	
 	    $('.no_audit_select').combobox({
 	        onChange:function(newValue,oldValue){
 	            var field=$(this).attr("comboname");
 	            changeNOAuditInputPushObje(field,newValue);
 	        }
 	    });
-
+	
 	    $('.no_audit_time').datebox({
 	        onSelect: function(data){
 	            var field=$(this).attr("comboname");
 	            var fieldVal=moment(data).format('YYYY-MM-DD');
 	            changeNOAuditInputPushObje(field,fieldVal);
-
+	
 	        }
 	    });
 	}
@@ -1211,13 +1302,13 @@
 								<td colspan="6"><hr style="height:1px;border:none;border-top:1px dashed red;" /></td>
 							</tr>
 							<tr>
-								<td class="doc_person_th"><span   id="doc_person_bmbh_span" class="doc_person_span">部门:</span><br/><input id="doc_person_bmbh"    name="bmbh"  style="width:138px;"     ></td>
-								<td class="doc_person_th"><span  id="doc_person_postName_span"  class="doc_person_span">岗位:</span><br/><input id="doc_person_post" class="audit_select select"  name="postName"  style="width:138px;"></td>
-								<td class="doc_person_th"><span  id="doc_person_orderNum_span"  class="doc_person_span">序号:</span><br/><input id="doc_person_orderNum" name="orderNum" class="easyui-numberbox no_audit_number"   style="width:138px;"     ></td>
-								<td class="doc_person_th"><span  id="doc_person_ename_span" class="doc_person_span">路径:</span><br/><input class="easyui-validatebox no_audit" type="text" name="ename"  id="doc_person_ename" data-options="required:true,missingMessage:'请填写路径'" style="width:138px;"   /></td>
+								<td class="doc_person_th"><span   id="doc_person_bmbh_span" class="doc_person_span">部门:</span><br/><input id="doc_person_bmbh"    name="bmbh"  style="width:138px;"></td>
+								<td class="doc_person_th"><span  id="doc_person_postName_span"  class="doc_person_span">岗位:</span><br/><input id="doc_person_post" class="audit_select select"  name="postName" style="width:138px;"></td>
+								<td class="doc_person_th"><span  id="doc_person_orderNum_span"  class="doc_person_span">序号:</span><br/><input id="doc_person_orderNum" name="orderNum" class="easyui-numberbox no_audit_number" style="width:138px;"></td>
+								<td class="doc_person_th"><span  id="doc_person_ename_span" class="doc_person_span">路径:</span><br/><input class="easyui-validatebox no_audit" type="text" name="ename"  id="doc_person_ename" data-options="required:true,missingMessage:'请填写路径'" style="width:138px;"/></td>
 							</tr>
 							<tr>
-								<td  class="doc_person_th"><span id="doc_person_name_span"  class="doc_person_span">姓名:</span><br/><input class="easyui-validatebox audit"  type="text" name="name"id="doc_person_name" data-options="required:true,missingMessage:'请填写姓名'" style="width: 138px;"  /></td>
+								<td  class="doc_person_th"><span id="doc_person_name_span"  class="doc_person_span">姓名:</span><br/><input class="easyui-validatebox audit"  type="text" name="name"id="doc_person_name" data-options="required:true,missingMessage:'请填写姓名'" style="width: 138px;"/></td>
 								<td  class="doc_person_th">
 									<span id="doc_person_sex_span" class="doc_person_span">性别:</span><br/>
 									<input id="doc_person_sex" class=" no_audit_select select" name="sex" style="width:138px;">

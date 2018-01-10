@@ -32,4 +32,4 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/plugins/json/json.js"></script>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/utils.js?v=20171108"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jxc.js?v=20171221"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jxc.js?v=20180110"></script>

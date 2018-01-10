@@ -9,7 +9,7 @@
 var jxc = $.extend({}, jxc);/* 定义全局对象，类似于命名空间或包的作用 */
 
 //系统设定，是否需要进行审核(Constant.java同步)
-var NEED_AUDIT = '1';
+var NEED_AUDIT = '0';
 var AUDIT_REFUSE = '9';
 
 jxc.cbs = function(bmbh){
@@ -598,9 +598,6 @@ jxc.getKhDet = function(url, depId, khbh, ywyId){
 };
 
 jxc.getYf = function(bmbh, spbh, dist, hjsl){
-	console.info('spbh:' + spbh);
-	console.info('dist:' + dist);
-	console.info('hjsl:' + hjsl);
 	var je = 0;
 	switch(bmbh){
 	case '05':

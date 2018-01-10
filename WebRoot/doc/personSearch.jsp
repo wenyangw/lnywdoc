@@ -159,6 +159,8 @@ function selectClick(){
  	cueMessage("sex",doc_personSearch_sex.combobox('getValue').trim(),"like","","string",0);
  	cueMessage("nation",doc_personSearch_nation.combobox('getValue'),"like","","string",0);
  	cueMessage("bmbh",doc_personSearch_bmbh.combobox('getValue'),"like","","string","");
+ 	cueMessage("birthTime",$('#doc_personSearch_birthTimeBegin').datebox('getValue'),">=","_a","date",0);
+ 	cueMessage("birthTime",$('#doc_personSearch_birthTimeEnd').datebox('getValue'),"<=","_b","date",0);
  	cueMessage("formalTime",$('#doc_personSearch_formalTimeBegin').datebox('getValue'),">=","_a","date",0);
  	cueMessage("formalTime",$('#doc_personSearch_formalTimeEnd').datebox('getValue'),"<=","_b","date",0);
  	cueMessage("jobTime",$('#doc_personSearch_jobTimeBegin').datebox('getValue'),">=","_a","date",0);
@@ -367,6 +369,15 @@ function exportExcel(){
 						<td><input name="nation" id="doc_personSearch_nation" /></td>
 					</tr>
 
+					<tr>
+						<td class="select_person_title">出生日期:</td>
+						<td></td>
+						<td>
+							<input  name="birthTimeBegin" id="doc_personSearch_birthTimeBegin" class="easyui-datebox doc_personSearch_date" />
+							<br/>
+							<input  name="birthTimeEnd" id="doc_personSearch_birthTimeEnd" class="easyui-datebox doc_personSearch_date" />
+						</td>
+					</tr>
 					<tr>
 						<td class="select_person_title">入党转正时间:</td>
 						<td></td>

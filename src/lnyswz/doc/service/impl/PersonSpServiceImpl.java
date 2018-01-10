@@ -314,7 +314,7 @@ public class PersonSpServiceImpl implements PersonSpServiceI {
     /**
      * 获取TPerson类的fields
      */
-	private Field[] getFields(){
+	public static Field[] getFields(){
 		Class oClass = null;
 		try {
 			oClass = Class.forName(TPerson.class.getName());
@@ -329,7 +329,7 @@ public class PersonSpServiceImpl implements PersonSpServiceI {
      * @param tPerson
      * @param tps
      */
-	private void updatePerson(TPerson tPerson, List<TPersonSp> tps){
+	public static void updatePerson(TPerson tPerson, List<TPersonSp> tps){
 		Field[] fields = getFields();
 		for(TPersonSp tp : tps) {
 			for (Field field : fields) {

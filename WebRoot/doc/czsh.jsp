@@ -262,7 +262,7 @@ function init(){
 	$('input').val('');
 
 	//根据权限，动态加载功能按钮
-	//lnyw.toolbar(0, czsh_spdg, '${pageContext.request.contextPath}/admin/buttonAction!buttons.action', did);
+	//lnyw.toolbar(0, czsh_spdg, '${pageContext.request.contextPath}/admin/buttonAction!buttons.action', did);au
 }
 
 
