@@ -186,6 +186,7 @@
                         $.ajax({
                             url : '${pageContext.request.contextPath}/doc/imgAction!add.action',
                             data : {
+                                catId: '01',
                                 entryId : getEntryId(),
                                 filePath: json.obj.filePath
                             },

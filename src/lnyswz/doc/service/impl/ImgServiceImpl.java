@@ -35,8 +35,10 @@ public class ImgServiceImpl implements ImgServiceI {
 		BeanUtils.copyProperties(img, t);
 
 		if(Constant.CATID_PERSON.equals(img.getCatId())) {
-			t.setOrderNum(getOrderNum(img.getEntryId() - Constant.ENTRY_ID_PLUS) + 1);
-			t.setTEntry(entryDao.load(TEntry.class, img.getEntryId() - Constant.ENTRY_ID_PLUS));
+			//t.setOrderNum(getOrderNum(img.getEntryId() - Constant.ENTRY_ID_PLUS) + 1);
+			t.setOrderNum(getOrderNum(img.getEntryId()) + 1);
+			//t.setTEntry(entryDao.load(TEntry.class, img.getEntryId() - Constant.ENTRY_ID_PLUS));
+			t.setTEntry(entryDao.load(TEntry.class, img.getEntryId()));
 		}else{
 			t.setOrderNum(getOrderNum(img.getEntryId()) + 1);
 			t.setTEntry(entryDao.load(TEntry.class, img.getEntryId()));
