@@ -75,7 +75,7 @@ public class ImgServiceImpl implements ImgServiceI {
 	public void delete(Img img) {
         TImg tImg = imgDao.get(TImg.class, img.getId());
 
-        UploadAction.deleteFile(tImg.getFilePath());
+        UploadAction.deleteFile("/" + tImg.getFilePath());
 
 		imgDao.delete(tImg);
 

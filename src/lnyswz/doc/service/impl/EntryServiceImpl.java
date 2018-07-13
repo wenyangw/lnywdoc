@@ -49,7 +49,8 @@ public class EntryServiceImpl implements EntryServiceI {
 
 		entryDao.save(t);
 
-		entry.setId(t.getId() + Constant.ENTRY_ID_PLUS);
+		//entry.setId(t.getId() + Constant.ENTRY_ID_PLUS);
+		entry.setId(t.getId());
 		entry.setCreateTime(t.getCreateTime());
 		entry.setType("entry");
 

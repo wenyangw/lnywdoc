@@ -44,7 +44,7 @@ public interface Constant {
 	public static int PAGE_DOCUMENT_SIZE = 14;
 
 	//文件上传后保存的路径
-	public static String UPLOADFILE_PATH = "/attached";
+	public static String UPLOADFILE_PATH = "attached";
 
 	public String[] PERSON_SP_EXCLUDE_FIELDS = {"id", "orderNum", "ename", "sex", "bz", "imgPath", "timeStamp", "status", "isAudit", "TDepartment"};
 

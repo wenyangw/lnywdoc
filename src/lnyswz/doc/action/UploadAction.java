@@ -42,7 +42,8 @@ public class UploadAction extends BaseAction{
 		//文件保存目录路径
 		String savePath = ServletActionContext.getServletContext().getRealPath(Constant.UPLOADFILE_PATH);
         //文件保存目录URL
-        String saveUrl  = ServletActionContext.getRequest().getContextPath() + Constant.UPLOADFILE_PATH;
+        //String saveUrl  = ServletActionContext.getRequest().getContextPath() + Constant.UPLOADFILE_PATH;
+        String saveUrl  = Constant.UPLOADFILE_PATH;
 
 		//检查目录
 		File uploadDir = new File(savePath);
@@ -105,7 +106,7 @@ public class UploadAction extends BaseAction{
 	public static boolean moveFile(String oldFilePath, String newFilePath){
 		String rootPath = UploadAction.getRootPath();
 		try {
-			FileUtils.moveFile(new File(rootPath + oldFilePath), new File(rootPath + newFilePath));
+			FileUtils.moveFile(new File(rootPath + "/" + oldFilePath), new File(rootPath + "/" + newFilePath));
 		}catch (IOException e){
 			e.printStackTrace();
 			return false;
